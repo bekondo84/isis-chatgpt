@@ -1,5 +1,6 @@
 package cm.nzock.facades.impl;
 
+import cm.nzock.beans.ChatLabelData;
 import cm.nzock.facades.ChatFacade;
 import cm.nzock.services.ChatService;
 import cm.platform.basecommerce.core.chat.ChatSessionModel;
@@ -38,7 +39,7 @@ public class DefaultChatFacade implements ChatFacade {
 
 
     @Override
-    public String converse(Long session, String text) {
+    public ChatLabelData converse(Long session, String uuid, String text) {
         assert Objects.nonNull(session): "Session PK is null";
 
         try {
@@ -47,10 +48,10 @@ public class DefaultChatFacade implements ChatFacade {
             if (!sessionExist.isPresent()) {
                 LOG.error("No chatSesion found PK : %s", session);
             }
-            return chatService.converse((ChatSessionModel) sessionExist.get(), text);
+            return chatService.converse((ChatSessionModel) sessionExist.get(), uuid, text);
         } catch (Exception e) {
             LOG.error("There is error during processing", e);
-            return i18NService.getLabel("error.message", "error.message");
+            return new ChatLabelData(uuid, i18NService.getLabel("error.message", "error.message"));
         }
     }
 
@@ -64,5 +65,17 @@ public class DefaultChatFacade implements ChatFacade {
         settings.put("chatname", setting.getChatname());
 
         return settings;
+    }
+
+    @Override
+    public String generateUuid() {
+        final UserModel user = userService.getCurrentUser();
+        String uuid = null ;
+        if (Objects.isNull(user)) {
+            uuid = UUID.randomUUID().toString();
+        } else  {
+            uuid = UUID.fromString(user.getCode()).toString();
+        }
+        return UUID.fromString(StringUtils.join(uuid, new Date().toString(), new Random().nextInt(50000))).toString();
     }
 }

@@ -1,5 +1,6 @@
 package cm.nzock.controllers;
 
+import cm.nzock.beans.ChatLabelData;
 import cm.nzock.facades.ChatFacade;
 import cm.nzock.services.ChatService;
 import cm.platform.basecommerce.core.utils.IsisConstants;
@@ -22,13 +23,18 @@ public class ChatBotController {
 
 
     @PostMapping
-    public ResponseEntity<String> tchat(@RequestParam("session")Long session , @RequestParam("text") String text) {
+    public ResponseEntity<ChatLabelData> tchat(@RequestParam("uuid") String uuid, @RequestParam("session")Long session , @RequestParam("text") String text) {
         LOG.info(String.format("Inside Chat API ------------------- %s", text));
-        return ResponseEntity.ok(chatFacade.converse(session, text)) ;
+        return ResponseEntity.ok(chatFacade.converse(session, uuid, text)) ;
     }
 
     @GetMapping("/settings")
     public ResponseEntity<Map<String, String>> generalSettings() {
         return ResponseEntity.ok(chatFacade.getGeneralSettings());
+    }
+
+    @GetMapping("/uuid")
+    public ResponseEntity<String> getUuid() {
+        return ResponseEntity.ok(chatFacade.generateUuid());
     }
 }

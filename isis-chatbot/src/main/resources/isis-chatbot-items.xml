@@ -227,6 +227,14 @@
             <itemtype code="ChatLog" package="cm.platform.basecommerce.core.chat" persist="true" generate="true" searchKey="input">
                 <deployment typecode="00110" table="t_chatlog"/>
                 <attributes>
+                    <attribute qualifier="code" type="java.lang.String">
+                        <persistence type="persistent"/>
+                        <modifiers optional="false" unique="false"/>
+                    </attribute>
+                    <attribute qualifier="uuid" type="java.lang.String">
+                        <persistence type="persistent"/>
+                        <modifiers optional="false"/>
+                    </attribute>
                     <attribute qualifier="input" type="ISIS_BIG_STRING">
                         <persistence type="persistent"/>
                         <modifiers optional="false"/>
