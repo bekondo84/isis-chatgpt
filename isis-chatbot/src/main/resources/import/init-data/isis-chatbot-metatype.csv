@@ -1,0 +1,35 @@
+INSERT_UPDATE MetaType;code[unique=true];codeType;typeName;parent;generate;persist;abstractClass;description
+;UserAccessLevel;00100;cm.platform.basecommerce.core.security.UserAccessLevelModel;  ;true;true;false;  
+;Employee;000029;cm.platform.basecommerce.core.security.EmployeeModel;User;true;true;false;Users account
+;KnowledgeType;00101;cm.platform.basecommerce.core.knowledge.KnowledgeTypeModel;  ;true;true;false;  
+;AbstractKnowledge;00102;cm.platform.basecommerce.core.knowledge.AbstractKnowledgeModel;  ;true;true;true;  
+;Knowledge;00103;cm.platform.basecommerce.core.knowledge.KnowledgeModel;AbstractKnowledge;true;true;false;  
+;KnowlegeLabel;00104;cm.platform.basecommerce.core.knowledge.KnowlegeLabelModel;AbstractKnowledge;true;true;false;  
+;Log;00105;cm.platform.basecommerce.core.knowledge.LogModel;  ;true;true;true;  
+;ImportLog;00106;cm.platform.basecommerce.core.knowledge.ImportLogModel;Log;true;true;false;  
+;GeneratorLog;00107;cm.platform.basecommerce.core.knowledge.GeneratorLogModel;Log;true;true;false;  
+;ChatSession;00108;cm.platform.basecommerce.core.chat.ChatSessionModel;  ;true;true;false;  
+;ChatLog;00110;cm.platform.basecommerce.core.chat.ChatLogModel;  ;true;true;false;  
+;CellMemory;00111;cm.platform.basecommerce.core.chat.CellMemoryModel;  ;true;true;false;  
+;Setting;000059;cm.platform.basecommerce.core.settings.SettingModel;  ;true;true;false;  
+;ScriptType;scripttype;cm.platform.basecommerce.core.enums.ScriptType;EnumerateValue;true;true;false;  
+;ImportLogType;importlogtype;cm.platform.basecommerce.core.enums.ImportLogType;EnumerateValue;true;true;false;  
+;ImportLogState;importlogstate;cm.platform.basecommerce.core.enums.ImportLogState;EnumerateValue;true;true;false;  
+;ChatLogState;chatlogstate;cm.platform.basecommerce.core.enums.ChatLogState;EnumerateValue;true;true;false;  
+;EnumerateValue;enumeratevalue;cm.platform.basecommerce.core.EnumerateValue;EnumerateValue;true;false;false;Enum base class
+INSERT_UPDATE ChatLogState;code
+;KNOWN
+;UNCERTAIN
+;UNKNOWN
+INSERT_UPDATE ImportLogType;code
+;APPEND
+;RESET
+INSERT_UPDATE ImportLogState;code
+;LOAD
+;IMPORT
+;ERROR
+INSERT_UPDATE ScriptType;code
+;GROOVY
+;JavaScript
+
+

@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<context xmlns="http://www.isis.cm/config/isis-item"
+         xmlns:ls="http://www.isis.cm/config/list-view"
+         xmlns:s="http://www.isis.cm/config/isis-search"
+         xmlns:e="http://www.isis.cm/config/editor-area"
+         action="generatorLogAction">
+    <ls:list-view>
+        <ls:list>
+            <ls:column qualifier="motif"  search="false"/>
+            <ls:column qualifier="date"  search="false" widget="datetime-local"/>
+            <ls:column qualifier="modelname" search="true"  />
+        </ls:list>
+    </ls:list-view>
+    <e:editor-area update="false">
+        <e:component>
+            <e:common>
+                <e:form>
+                    <e:section columns="2" position="4" name="commons">
+                        <e:field qualifier="date" editable="false"/>
+                        <e:field qualifier="modelname"  editable="false"/>
+                    </e:section>
+                    <e:section columns="1" position="4" name="commons">
+                         <e:field qualifier="motif"  widget="textarea"/>
+                    </e:section>
+                </e:form>
+            </e:common>
+        </e:component>
+    </e:editor-area>
+</context>

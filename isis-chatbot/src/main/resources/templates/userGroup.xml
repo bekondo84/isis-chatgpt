@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<context xmlns="http://www.isis.cm/config/isis-item"
+         xmlns:ls="http://www.isis.cm/config/list-view"
+         xmlns:s="http://www.isis.cm/config/isis-search"
+         xmlns:e="http://www.isis.cm/config/editor-area">
+  <ls:list-view>
+      <ls:list>
+          <ls:column qualifier="code"  search="true"/>
+          <ls:column qualifier="name"  search="true" widget="localized"/>
+          <ls:column qualifier="module" search="true" />
+      </ls:list>
+  </ls:list-view>
+  <e:editor-area searchKey="code">
+      <e:component>
+          <e:common>
+              <e:form>
+                  <e:section columns="2" position="4" name="commons">
+                      <e:field qualifier="code" />
+                      <e:field qualifier="name" widget="localized"/>
+                      <e:field qualifier="module" observable="true" editable="false"/>
+                  </e:section>
+                  <e:section columns="1" position="2" name="autorization">
+                      <e:field qualifier="userGroupRigths" widget="onetomany" observe="module" handler="module.rigths" updatable="true" editable="false"/>
+                  </e:section>
+              </e:form>
+          </e:common>
+      </e:component>
+  </e:editor-area>
+</context>

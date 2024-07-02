@@ -1,0 +1,318 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<items xmlns="http://www.isis.cm/config/items"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xsi:schemaLocation="http://www.isis.cm/config/items schema/items.xsd">
+    <colleciontypes></colleciontypes>
+    <enumtypes>
+        <enumtype code="ScriptType" persist="true">
+            <value code="GROOVY"/>
+            <value code="JavaScript"/>
+        </enumtype>
+        <enumtype code="ImportLogType" persist="true">
+            <value code="APPEND"/>
+            <value code="RESET"/>
+        </enumtype>
+        <enumtype code="ImportLogState" persist="true">
+            <value code="LOAD"/>
+            <value code="IMPORT"/>
+            <value code="ERROR"/>
+        </enumtype>
+        <enumtype code="ChatLogState" persist="true">
+            <value code="KNOWN"/>
+            <value code="UNCERTAIN"/>
+            <value code="UNKNOWN"/>
+        </enumtype>
+    </enumtypes>
+    <relations>
+        <relation code="UserAccessLevel_R">
+            <deployment typecode="00109" table="t_useraccesslevel_r"/>
+            <source qualifier="account" type="Employee" collectiontype="list" cardinality="many">
+                <modifiers/>
+            </source>
+            <target qualifier="accessLevel" type="UserAccessLevel" cardinality="many" collectiontype="list" navigable="false">
+                <modifiers/>
+            </target>
+        </relation>
+    </relations>
+    <itemtypes>
+        <itemgroup name="Security Group">
+            <itemtype code="UserAccessLevel" package="cm.platform.basecommerce.core.security" generate="true" persist="true" searchKey="code">
+                <deployment table="t_accesslevel" typecode="00100"/>
+                <attributes>
+                    <attribute qualifier="code" type="java.lang.String">
+                        <persistence type="persistent"/>
+                        <modifiers unique="true" optional="false" />
+                    </attribute>
+                    <attribute qualifier="label" type="Localized:java.lang.String">
+                        <persistence type="persistent"/>
+                        <modifiers optional="false" />
+                    </attribute>
+                    <attribute qualifier="description" type="Localized:ISIS_BIG_STRING">
+                        <persistence type="persistent"/>
+                        <modifiers />
+                    </attribute>
+                </attributes>
+            </itemtype>
+            <itemtype code="Employee" package="cm.platform.basecommerce.core.security" generate="true" persist="true" extends="User"  searchKey="name">
+                <description>Users account</description>
+                <deployment table="employee" typecode="000029"/>
+                <attributes></attributes>
+            </itemtype>
+        </itemgroup>
+        <itemgroup name="Knowledge management">
+            <itemtype code="KnowledgeType" package="cm.platform.basecommerce.core.knowledge" generate="true" persist="true" searchKey="code">
+                <deployment typecode="00101" table="t_knowledgetype"/>
+                <attributes>
+                    <attribute qualifier="code" type="java.lang.String">
+                        <persistence type="persistent"/>
+                        <modifiers unique="true" optional="false"/>
+                    </attribute>
+                    <attribute qualifier="label" type="Localized:java.lang.String">
+                        <persistence type="persistent"/>
+                        <modifiers optional="false" />
+                    </attribute>
+                    <attribute qualifier="description" type="Localized:ISIS_BIG_STRING">
+                        <persistence type="persistent"/>
+                        <modifiers />
+                    </attribute>
+                </attributes>
+            </itemtype>
+            <itemtype code="AbstractKnowledge" package="cm.platform.basecommerce.core.knowledge" generate="true" persist="true" abstract="true">
+                <deployment table="t_knowledge" typecode="00102"/>
+                <attributes>
+                    <attribute qualifier="created" type="java.util.Date">
+                        <persistence type="persistent"/>
+                        <modifiers datetype="datetime"/>
+                    </attribute>
+                    <attribute qualifier="createdby" type="Employee">
+                        <persistence type="persistent"/>
+                        <modifiers />
+                    </attribute>
+                    <attribute qualifier="modified" type="java.util.Date">
+                        <persistence type="persistent"/>
+                        <modifiers datetype="datetime"/>
+                    </attribute>
+                    <attribute qualifier="modifiedBy" type="Employee">
+                        <persistence type="persistent"/>
+                        <modifiers />
+                    </attribute>
+                </attributes>
+            </itemtype>
+            <itemtype code="Knowledge" package="cm.platform.basecommerce.core.knowledge" persist="true" generate="true" extends="AbstractKnowledge">
+                <deployment typecode="00103" table="t_input"/>
+                <attributes>
+                    <attribute qualifier="code" type="java.lang.String">
+                        <persistence type="persistent"/>
+                        <modifiers unique="true" optional="false"/>
+                    </attribute>
+                    <attribute qualifier="template" type="ISIS_BIG_STRING">
+                        <persistence type="persistent"/>
+                        <modifiers />
+                    </attribute>
+                    <attribute qualifier="keywords" type="ISIS_BIG_STRING">
+                        <persistence type="persistent"/>
+                        <modifiers />
+                    </attribute>
+                    <attribute qualifier="category" type="KnowledgeType">
+                        <persistence type="persistent"/>
+                        <modifiers optional="false"/>
+                    </attribute>
+                    <attribute qualifier="label" type="KnowlegeLabel">
+                        <persistence type="persistent"/>
+                        <modifiers optional="false" />
+                    </attribute>
+                    <attribute qualifier="labeltext" type="ISIS_BIG_STRING">
+                        <persistence type="persistent"/>
+                        <modifiers />
+                    </attribute>
+                </attributes>
+            </itemtype>
+            <itemtype code="KnowlegeLabel" package="cm.platform.basecommerce.core.knowledge" extends="AbstractKnowledge" persist="true" generate="true">
+                <deployment typecode="00104" table="t_output"/>
+                <attributes>
+                    <attribute qualifier="code" type="java.lang.String">
+                        <persistence type="persistent"/>
+                        <modifiers unique="true" optional="false"/>
+                    </attribute>
+                    <attribute qualifier="label" type="ISIS_BIG_STRING">
+                        <persistence type="persistent"/>
+                        <modifiers />
+                    </attribute>
+                    <attribute qualifier="action" type="java.lang.String">
+                        <persistence type="persistent"/>
+                        <modifiers />
+                    </attribute>
+                    <attribute qualifier="type" type="ScriptType">
+                        <persistence type="persistent"/>
+                        <modifiers />
+                    </attribute>
+                    <attribute qualifier="script" type="ISIS_BIG_STRING">
+                        <persistence type="persistent"/>
+                        <modifiers />
+                    </attribute>
+                    <attribute qualifier="endLabel" type="java.lang.Boolean">
+                        <persistence type="persistent"/>
+                        <modifiers initial="true"/>
+                        <defaultvalue>java.lang.Boolean.valueOf("TRUE")</defaultvalue>
+                    </attribute>
+                </attributes>
+            </itemtype>
+            <itemtype code="Log" package="cm.platform.basecommerce.core.knowledge" generate="true" persist="true" abstract="true">
+                <deployment typecode="00105" table="t_log"/>
+                <attributes>
+                    <attribute qualifier="date" type="java.util.Date">
+                        <persistence type="persistent"/>
+                        <modifiers optional="true" datetype="datetime" />
+                    </attribute>
+                    <attribute qualifier="motif" type="ISIS_BIG_STRING">
+                        <persistence type="persistent"/>
+                        <modifiers />
+                    </attribute>
+                </attributes>
+            </itemtype>
+            <itemtype code="ImportLog" package="cm.platform.basecommerce.core.knowledge" persist="true" generate="true" extends="Log">
+                <deployment typecode="00106" table="t_importlog"/>
+                <attributes>
+                    <attribute qualifier="filename" type="java.lang.String">
+                        <persistence type="persistent"/>
+                        <modifiers unique="true" optional="false"/>
+                    </attribute>
+                    <attribute qualifier="type" type="ImportLogType">
+                        <persistence type="persistent"/>
+                        <modifiers optional="false"/>
+                    </attribute>
+                    <attribute qualifier="state" type="ImportLogState">
+                        <persistence type="persistent"/>
+                        <modifiers />
+                    </attribute>
+                    <attribute qualifier="output" type="ISIS_BIG_STRING">
+                        <persistence type="persistent"/>
+                        <modifiers />
+                    </attribute>
+                </attributes>
+            </itemtype>
+            <itemtype code="GeneratorLog" package="cm.platform.basecommerce.core.knowledge" persist="true" generate="true" extends="Log">
+                <deployment typecode="00107" table="t_generatorlog"/>
+                <attributes>
+                    <attribute qualifier="modelname" type="java.lang.String">
+                        <persistence type="persistent"/>
+                        <modifiers />
+                    </attribute>
+                </attributes>
+            </itemtype>
+        </itemgroup>
+        <itemgroup name="Chat management">
+            <itemtype code="ChatSession" package="cm.platform.basecommerce.core.chat" generate="true" persist="true" searchKey="label">
+                <deployment typecode="00108" table="t_chatsession"/>
+                <attributes>
+                    <attribute qualifier="label" type="java.lang.String">
+                        <persistence type="persistent"/>
+                        <modifiers />
+                    </attribute>
+                    <attribute qualifier="date" type="java.util.Date">
+                        <persistence type="persistent"/>
+                        <modifiers />
+                    </attribute>
+                    <attribute qualifier="account" type="Employee">
+                        <persistence type="persistent"/>
+                        <modifiers />
+                    </attribute>
+                    <attribute qualifier="isDelete" type="java.lang.Boolean">
+                        <persistence type="persistent"/>
+                        <modifiers initial="true"/>
+                        <defaultvalue>java.lang.Boolean.valueOf("false")</defaultvalue>
+                    </attribute>
+                </attributes>
+            </itemtype>
+            <itemtype code="ChatLog" package="cm.platform.basecommerce.core.chat" persist="true" generate="true" searchKey="input">
+                <deployment typecode="00110" table="t_chatlog"/>
+                <attributes>
+                    <attribute qualifier="input" type="ISIS_BIG_STRING">
+                        <persistence type="persistent"/>
+                        <modifiers optional="false"/>
+                    </attribute>
+                    <attribute qualifier="output" type="ISIS_BIG_STRING">
+                        <persistence type="persistent"/>
+                        <modifiers optional="false"/>
+                    </attribute>
+                    <attribute qualifier="session" type="ChatSession">
+                        <persistence type="persistent"/>
+                        <modifiers />
+                    </attribute>
+                    <attribute qualifier="date" type="java.util.Date">
+                        <persistence type="persistent"/>
+                        <modifiers optional="false" datetype="datetime"/>
+                    </attribute>
+                    <attribute qualifier="by" type="Employee">
+                        <persistence type="persistent"/>
+                        <modifiers />
+                    </attribute>
+                    <attribute qualifier="state" type="ChatLogState">
+                        <persistence type="persistent"/>
+                        <modifiers />
+                    </attribute>
+                </attributes>
+            </itemtype>
+            <itemtype code="CellMemory" package="cm.platform.basecommerce.core.chat" persist="true" generate="true">
+                <deployment table="t_cell" typecode="00111"/>
+                <attributes>
+                    <attribute qualifier="id" type="java.lang.String">
+                        <description>Identifiaant of the user who is discussing</description>
+                        <persistence type="persistent"/>
+                        <modifiers unique="true" optional="false"/>
+                    </attribute>
+                    <attribute qualifier="value" type="ISIS_BIG_STRING">
+                        <persistence type="persistent"/>
+                        <modifiers optional="false" />
+                    </attribute>
+                </attributes>
+            </itemtype>
+        </itemgroup>
+        <itemgroup name="Administration">
+            <itemtype code="Setting" package="cm.platform.basecommerce.core.settings" generate="true" persist="true">
+                <deployment typecode="000059" table="setting"/>
+                <attributes>
+                    <attribute qualifier="learningrate" type="java.lang.Double">
+                        <persistence type="persistent"/>
+                        <modifiers initial="true"/>
+                        <defaultvalue>java.lang.Double.valueOf("0.20")</defaultvalue>
+                    </attribute>
+                    <attribute qualifier="minlearningrate" type="java.lang.Double">
+                        <persistence type="persistent"/>
+                        <modifiers initial="true"/>
+                        <defaultvalue>java.lang.Double.valueOf("0.08")</defaultvalue>
+                    </attribute>
+                    <attribute qualifier="batchsize" type="java.lang.Integer">
+                        <persistence type="persistent"/>
+                        <modifiers initial="true"/>
+                        <defaultvalue>java.lang.Integer.valueOf("50")</defaultvalue>
+                    </attribute>
+                    <attribute qualifier="epochs" type="java.lang.Integer">
+                        <persistence type="persistent"/>
+                        <modifiers initial="true"/>
+                        <defaultvalue>java.lang.Integer.valueOf("10")</defaultvalue>
+                    </attribute>
+                    <attribute qualifier="activemodel" type="java.lang.String">
+                        <persistence type="persistent"/>
+                        <modifiers />
+                    </attribute>
+                    <attribute qualifier="acceptancerate" type="java.lang.Double">
+                        <persistence type="persistent"/>
+                        <modifiers initial="true"/>
+                        <defaultvalue>java.lang.Double.valueOf("90")</defaultvalue>
+                    </attribute>
+                    <attribute qualifier="uncertaintyrate" type="java.lang.Double">
+                        <persistence type="persistent"/>
+                        <modifiers initial="true"/>
+                        <defaultvalue>java.lang.Double.valueOf("30")</defaultvalue>
+                    </attribute>
+                    <attribute qualifier="chatname" type="java.lang.String">
+                        <persistence type="persistent"/>
+                        <modifiers initial="true"/>
+                        <defaultvalue>java.lang.String.valueOf("ISIS Chat")</defaultvalue>
+                    </attribute>
+                </attributes>
+            </itemtype>
+        </itemgroup>
+    </itemtypes>
+</items>

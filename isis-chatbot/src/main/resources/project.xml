@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<project xmlns="http://www.isis.cm/config/project"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://www.isis.cm/config/project  schema/project.xsd">
+    <name>isis-chatbot</name>
+    <version>1.0.0</version>
+    <author>BEKONDO KANGUE Dieunedort</author>
+    <sequence>10</sequence>
+    <summary>
+        <entry local="fr">
+            <value>Robot conversationnel</value>
+        </entry>
+        <entry local="en">
+            <value>Chat bot module</value>
+        </entry>
+    </summary>
+    <description>
+        <entry local="fr">
+            <value>Implementation d'un robot conversationnel, pour l'assistance aux utilisateurs</value>
+        </entry>
+        <entry local="en">
+            <value>Implementation of chatbot for user assistance on every days process</value>
+        </entry>
+    </description>
+    <category>social networking</category>
+    <website>https://www.isis.com</website>
+    <type>application</type>
+    <depends>
+
+    </depends>
+</project>

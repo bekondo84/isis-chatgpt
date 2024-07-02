@@ -1,0 +1,19 @@
+##TemplatePage section
+INSERT_UPDATE PageTemplate;code[unique=true];name[lang=fr];name[lang=en];path;module(name);cmsType(code)
+                          ;Employee;Template formulaire Employée;Template for Worker;chatUser.xml;isis-chatbot;PAGE
+                          ;UserGroup; Formulaire group de sécurité;Security group form;userGroup.xml;isis-chatbot;PAGE
+                          ;UserGroupRigths; Formulaire droit;Rigths formular;userGroupRigths.xml;isis-chatbot;PAGE
+                          ;ImportLog; Formulaire importation de la connassance;Knowledge import form;importLog.xml;isis-chatbot;PAGE
+                          ;Knowledge; Formulaire enregistrement d'un connassance;Knowledge form;knowledge.xml;isis-chatbot;PAGE
+                          ;KnowledgeType; Formulaire enregistrement d'un type connassance;Knowledge type form;knowledgeType.xml;isis-chatbot;PAGE
+                          ;GeneratorLog; Génération des modèles;Knowledge type form;generatorLog.xml;isis-chatbot;PAGE
+                          ;ChatLog; Historiques des échanges;conversations log;chatLog.xml;isis-chatbot;PAGE
+                          ;ChatSession; Session des échanges;log conversation echange;chatSession.xml;isis-chatbot;PAGE
+                          ;UserAccessLevel; Niveaux d'accès de l'utilisateur;User access level;userAccessLevel.xml;isis-chatbot;PAGE
+                          ;KnowlegeLabel; Reponses aux questions;anwser to questions;knowlegeLabel.xml;isis-chatbot;PAGE
+
+##Custom user actions
+INSERT_UPDATE ActionNode;code[unique=true];label[lang=fr];label[lang=en];module(name);action;method
+                        ;validation.action;Valider le fichier de connaissance;Knowledge file validator;isis-chatbot;importLogAction;validation
+                        ;importation.action;Ouvrir le compte utilisateur;Open user account;isis-chatbot;importLogAction;importation
+                        ;label.handler;Intercepteur du champ label;label field handler;isis-chatbot;knowledgeAction;labelHandler

@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<context xmlns="http://www.isis.cm/config/isis-item"
+         xmlns:ls="http://www.isis.cm/config/list-view"
+         xmlns:a="http://www.isis.cm/config/isis-actions"
+         xmlns:e="http://www.isis.cm/config/editor-area"
+         action="importLogAction">
+    <ls:list-view>
+        <ls:list>
+            <ls:column qualifier="date"  search="false" show="true"/>
+            <ls:column qualifier="filename"  search="true" show="true"/>
+            <ls:column qualifier="motif" search="false"  widget="localized" show="true"/>
+            <ls:column qualifier="state" search="true"  widget="manytoone" show="true"/>
+            <ls:column qualifier="output" search="true" show="true"/>
+        </ls:list>
+    </ls:list-view>
+    <e:editor-area searchKey="filename">
+        <e:component>
+            <e:common>
+                <e:form>
+                    <e:section columns="2" position="4" name="commons">
+                        <e:field qualifier="filename" updatable="false" widget="file" />
+                        <e:field qualifier="type" updatable="false" widget="manytoone" />
+                        <e:field qualifier="date" editable="false" widget="datetime-local"/>
+                        <e:field qualifier="state" widget="manytoone" updatable="false" editable="false"/>
+                    </e:section>
+                    <e:section columns="1" position="3" name="type.ImportLog.motif.name" header="true">
+                        <e:field qualifier="motif" widget="textarea" updatable="true" />
+                    </e:section>
+                    <e:section columns="1" position="2" name="type.ImportLog.output.name" header="true">
+                        <e:field qualifier="output" widget="textarea" updatable="false" editable="false"/>
+                    </e:section>
+                </e:form>
+            </e:common>
+        </e:component>
+        <a:actions>
+            <a:action name="type.ImportLog.validate.btn" code="validation.action" icon="fa-solid fa-magnifying-glass" position="workflow" />
+            <a:action name="type.ImportLog.import.btn" code="importation.action" icon="fa-solid fa-arrow-up-from-bracket" position="workflow" />
+        </a:actions>
+    </e:editor-area>
+</context>

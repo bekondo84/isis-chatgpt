@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<context xmlns="http://www.isis.cm/config/isis-item"
+         xmlns:ls="http://www.isis.cm/config/list-view"
+         xmlns:s="http://www.isis.cm/config/isis-search"
+         xmlns:e="http://www.isis.cm/config/editor-area">
+    <ls:list-view>
+        <ls:list>
+            <ls:column qualifier="code"  search="true"/>
+            <ls:column qualifier="label"  search="true"/>
+            <ls:column qualifier="action" search="true" />
+            <ls:column qualifier="type" search="true" widget="manytoone" />
+            <ls:column qualifier="created" search="true" widget="datetime-local" show="false"/>
+            <ls:column qualifier="createdby" search="true" widget="manytoone" show="false"/>
+            <ls:column qualifier="modified" search="true" widget="datetime-local" show="false"/>
+            <ls:column qualifier="modifiedBy" search="true" widget="manytoone"  show="false"/>
+        </ls:list>
+    </ls:list-view>
+    <e:editor-area searchKey="code">
+        <e:component>
+            <e:common>
+                <e:form>
+                    <e:section columns="2" position="10" name="type.Knowledge.section.commons">
+                        <e:field qualifier="code" />
+                        <e:field qualifier="endLabel" widget="switch" updatable="true" />
+                    </e:section>
+                    <e:section columns="1" position="9" name="type.Knowledge.section.commons">
+                        <e:field qualifier="label" widget="textarea"/>
+                    </e:section>
+                </e:form>
+            </e:common>
+            <e:tab name="type.KnowledgeLabel.tab.01" position="5">
+                <e:form>
+                    <e:section name="type.Knowledge.section.01" position="1" columns="2">
+                        <e:field qualifier="action"/>
+                    </e:section>
+                </e:form>
+            </e:tab>
+            <e:tab name="type.KnowledgeLabel.tab.02" position="5">
+                <e:form>
+                    <e:section name="type.Knowledge.section.01" position="2" columns="2">
+                        <e:field qualifier="type" widget="manytoone"/>
+                    </e:section>
+                    <e:section name="type.Knowledge.section.01" position="1" columns="1">
+                        <e:field qualifier="script" widget="textarea"/>
+                    </e:section>
+                </e:form>
+            </e:tab>
+            <e:tab name="type.Knowledge.tab.02" position="5">
+                <e:form>
+                    <e:section name="type.Knowledge.section.01" position="1" columns="2">
+                        <e:field qualifier="createdby" widget="manytoone" editable="false"/>
+                        <e:field qualifier="created" widget="datetime-local" editable="false"/>
+                        <e:field qualifier="modifiedBy" widget="manytoone" editable="false"/>
+                        <e:field qualifier="modified" widget="datetime-local" editable="false"/>
+                    </e:section>
+                </e:form>
+            </e:tab>
+        </e:component>
+    </e:editor-area>
+</context>

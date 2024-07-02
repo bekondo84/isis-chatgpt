@@ -1,0 +1,139 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+  <parent>
+    <artifactId>custom</artifactId>
+    <groupId>cm.nzock</groupId>
+    <version>1.0-SNAPSHOT</version>
+  </parent>
+
+  <groupId>cm.nzock</groupId>
+  <artifactId>isis-chatbot</artifactId>
+  <version>1.0-SNAPSHOT</version>
+  <packaging>war</packaging>
+
+  <properties>
+    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+    <maven.compiler.source>17</maven.compiler.source>
+    <maven.compiler.target>17</maven.compiler.target>
+    <dl4j.version>1.0.0-beta6</dl4j.version>
+  </properties>
+
+  <dependencies>
+    <dependency>
+      <groupId>org.springframework.boot</groupId>
+      <artifactId>spring-boot-starter-web</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.springframework.boot</groupId>
+      <artifactId>spring-boot-starter-tomcat</artifactId>
+      <scope>provided</scope>
+    </dependency>
+    <dependency>
+      <groupId>cm.nzock</groupId>
+      <artifactId>basecommerce</artifactId>
+      <version>1.0-SNAPSHOT</version>
+    </dependency>
+    <dependency>
+      <groupId>cm.nzock</groupId>
+      <artifactId>basecommerceservices</artifactId>
+      <version>1.0-SNAPSHOT</version>
+    </dependency>
+    <dependency>
+      <groupId>cm.nzock</groupId>
+      <artifactId>basecommerceoauth2</artifactId>
+      <version>1.0-SNAPSHOT</version>
+    </dependency>
+    <dependency>
+      <groupId>cm.nzock</groupId>
+      <artifactId>basecommercefacade</artifactId>
+      <version>1.0-SNAPSHOT</version>
+    </dependency>
+    <dependency>
+      <groupId>org.deeplearning4j</groupId>
+      <artifactId>deeplearning4j-core</artifactId>
+      <version>${dl4j.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>org.deeplearning4j</groupId>
+      <artifactId>deeplearning4j-nlp</artifactId>
+      <version>${dl4j.version}</version>
+    </dependency>
+    <!-- ND4J Backend - Choose one based on your platform -->
+    <!-- For CPU -->
+    <dependency>
+      <groupId>org.nd4j</groupId>
+      <artifactId>nd4j-native-platform</artifactId>
+      <version>${dl4j.version}</version>
+    </dependency>
+    <!-- ND4J Additional -->
+    <dependency>
+      <groupId>org.nd4j</groupId>
+      <artifactId>nd4j-common</artifactId>
+      <version>${dl4j.version}</version>
+    </dependency>
+
+    <!-- ND4J Native Blas (CPU acceleration) -->
+    <dependency>
+      <groupId>org.nd4j</groupId>
+      <artifactId>nd4j-native</artifactId>
+      <version>${dl4j.version}</version>
+    </dependency>
+    <!-- Logging (SLF4J + Logback) -->
+    <dependency>
+      <groupId>org.slf4j</groupId>
+      <artifactId>slf4j-api</artifactId>
+      <version>1.7.30</version>
+    </dependency>
+    <dependency>
+      <groupId>ch.qos.logback</groupId>
+      <artifactId>logback-classic</artifactId>
+      <version>1.2.3</version>
+    </dependency>
+    <dependency>
+      <groupId>junit</groupId>
+      <artifactId>junit</artifactId>
+      <version>4.11</version>
+      <scope>test</scope>
+    </dependency>
+  </dependencies>
+
+  <build>
+    <plugins>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-surefire-plugin</artifactId>
+        <configuration>
+          <testFailureIgnore>true</testFailureIgnore>
+        </configuration>
+      </plugin>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-war-plugin</artifactId>
+        <version>3.3.2</version>
+        <configuration>
+          <failOnMissingWebXml>false</failOnMissingWebXml>
+        </configuration>
+      </plugin>
+      <plugin>
+        <groupId>org.springframework.boot</groupId>
+        <artifactId>spring-boot-maven-plugin</artifactId>
+        <configuration>
+          <mainClass>cm.platform.backoffice.BackofficeApplication</mainClass>
+        </configuration>
+      </plugin>
+      <plugin>
+        <groupId>org.apache.tomcat.maven</groupId>
+        <artifactId>tomcat7-maven-plugin</artifactId>
+        <version>2.2</version>
+        <configuration>
+          <url>http://localhost:8080/manager/text</url>
+          <server>TomcatServer</server>
+          <path>/isis-chatbot</path>
+          <update>true</update>
+        </configuration>
+      </plugin>
+    </plugins>
+    <finalName>isis-chatbot</finalName>
+  </build>
+</project>

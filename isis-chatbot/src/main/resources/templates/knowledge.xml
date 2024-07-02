@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<context xmlns="http://www.isis.cm/config/isis-item"
+         xmlns:ls="http://www.isis.cm/config/list-view"
+         xmlns:s="http://www.isis.cm/config/isis-search"
+         xmlns:e="http://www.isis.cm/config/editor-area"
+         action="knowledgeAction">
+    <ls:list-view>
+        <ls:list>
+            <ls:column qualifier="code"  search="true"/>
+            <ls:column qualifier="template"  search="true"/>
+            <ls:column qualifier="keywords" search="true" />
+            <ls:column qualifier="category" search="true" widget="manytoone" />
+            <ls:column qualifier="label" search="true"  widget="manytoone"/>
+            <ls:column qualifier="labeltext" search="true" />
+            <ls:column qualifier="created" search="true" widget="datetime-local" show="false"/>
+            <ls:column qualifier="createdby" search="true" widget="manytoone" show="false"/>
+            <ls:column qualifier="modified" search="true" widget="datetime-local" show="false"/>
+            <ls:column qualifier="modifiedBy" search="true" widget="manytoone"  show="false"/>
+        </ls:list>
+    </ls:list-view>
+    <e:editor-area searchKey="code">
+        <e:component>
+            <e:common>
+                <e:form>
+                    <e:section columns="2" position="10" name="type.Knowledge.section.commons">
+                        <e:field qualifier="code" />
+                        <e:field qualifier="category" widget="manytoone"/>
+                    </e:section>
+                    <e:section columns="1" position="9" name="type.Knowledge.template.name" header="true">
+                        <e:field qualifier="template" widget="textarea" updatable="true" />
+                    </e:section>
+                    <e:section columns="1" position="8" name="type.Knowledge.keywords.name" header="true">
+                        <e:field qualifier="keywords" widget="textarea" updatable="true" />
+                    </e:section>
+                    <e:section columns="1" position="7" name="type.Knowledge.label.name" header="true">
+                        <e:field qualifier="label" widget="manytoone" updatable="true" observable="true"/>
+                        <e:field qualifier="labeltext" widget="textarea" updatable="false"  editable="false" observe="label" handler="label.handler" />
+                    </e:section>
+                </e:form>
+            </e:common>
+            <e:tab name="type.Knowledge.tab.02" position="5">
+                <e:form>
+                    <e:section name="type.Knowledge.section.01" position="1" columns="2">
+                        <e:field qualifier="createdby" widget="manytoone" />
+                        <e:field qualifier="created" widget="datetime-local" />
+                        <e:field qualifier="modifiedBy" widget="manytoone" />
+                        <e:field qualifier="modified" widget="datetime-local" />
+                    </e:section>
+                </e:form>
+            </e:tab>
+        </e:component>
+    </e:editor-area>
+</context>

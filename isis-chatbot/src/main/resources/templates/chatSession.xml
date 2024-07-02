@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<context xmlns="http://www.isis.cm/config/isis-item"
+         xmlns:ls="http://www.isis.cm/config/list-view"
+         xmlns:s="http://www.isis.cm/config/isis-search"
+         xmlns:e="http://www.isis.cm/config/editor-area">
+    <ls:list-view>
+        <ls:list create="false">
+            <ls:column qualifier="label"  search="true"/>
+            <ls:column qualifier="date"  search="false" widget="datetime-local"/>
+            <ls:column qualifier="account" search="true"  widget="manytoone"/>
+        </ls:list>
+    </ls:list-view>
+    <e:editor-area searchKey="label">
+        <e:component>
+            <e:common>
+                <e:form>
+                    <e:section columns="2" position="4" name="commons">
+                        <e:field qualifier="label" updatable="false" editable="false"/>
+                        <e:field qualifier="date"  widget="datetime-local" updatable="false" editable="false"/>
+                        <e:field qualifier="account"  widget="manytoone" editable="false" updatable="false"/>
+                    </e:section>
+                </e:form>
+            </e:common>
+        </e:component>
+    </e:editor-area>
+</context>

@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<tns:context name="Employee"
+             xmlns:tns="http://www.isis.cm/config/isis-item"
+             xmlns:ls="http://www.isis.cm/config/list-view"
+             xmlns:s="http://www.isis.cm/config/isis-search"
+             xmlns:a="http://www.isis.cm/config/isis-actions"
+             xmlns:e="http://www.isis.cm/config/editor-area">
+    <ls:list-view>
+        <ls:list>
+            <ls:column qualifier="code" search="true"/>
+            <ls:column qualifier="name" search="true"/>
+            <ls:column qualifier="surname" search="true"/>
+            <ls:column qualifier="email" search="true"/>
+            <ls:column qualifier="active" search="true"/>
+        </ls:list>
+        <ls:kanban>
+            <ls:template><![CDATA[
+                <div style="display: flex; flex-flow: row nowrap;">
+                    <div >
+                        <img name="$" src="image" width="50" height="70">
+                    </div>
+                    <div style="display: flex; flex-flow: column nowrap; align-items: self-start; font-size: 14px; font-family:'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif">
+                        <div name="$" value="code"></div>
+                        <div name="$" value="name" style="opacity: 0.6;"></div>
+                        <div name="$" value="email" style="opacity: 0.6;"></div>
+                    </div>
+                </div>]]>
+            </ls:template>
+        </ls:kanban>
+        <s:search>
+            <s:field name="pk" operator="eq"/>
+            <s:field name="code" operator="content"/>
+            <s:field name="name"  operator="content"/>
+            <s:field name="surname" operator="content" />
+            <s:field name="email"  operator="content"/>
+        </s:search>
+    </ls:list-view>
+    <e:editor-area searchKey="code" createOnField="false">
+        <e:component>
+            <e:common>
+                <e:form>
+                    <e:section name="hmc.essentials" position="99" columns="2">
+                        <e:field qualifier="code" />
+                        <e:field qualifier="accessLevel" widget="manytomany"/>
+                        <e:field qualifier="name" />
+                        <e:field qualifier="surname" />
+                    </e:section>
+                    <e:section name="hmc.essentials" position="90" columns="2">
+                        <e:field qualifier="email" />
+                        <e:field qualifier="companies" widget="manytomany"  />
+                    </e:section>
+                    <e:section name="hmc.general" columns="2" position="80">
+                        <e:field qualifier="locale" />
+                        <e:field qualifier="token" />
+                        <e:field qualifier="expired"  widget="switch" editable="false" updatable="false"/>
+                        <e:field qualifier="active" widget="switch" editable="false" updatable="false"/>
+                    </e:section>
+                </e:form>
+            </e:common>
+        </e:component>
+    </e:editor-area>
+</tns:context>
