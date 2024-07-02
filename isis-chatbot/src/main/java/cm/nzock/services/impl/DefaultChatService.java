@@ -60,7 +60,7 @@ public class DefaultChatService implements ChatService, InitializingBean {
     @Override
     public ChatLabelData converse(ChatSessionModel session, String uuid, String text) throws Exception {
         assert text != null : "Chat text can't be null";
-        assert Objects.nonNull(paragraphVectors) : "No mode found";
+        assert Objects.nonNull(paragraphVectors) : "No model found \nPlease generate new model and try again";
 
         final List<String> inputTokens = new ArrayList<>();
 

@@ -70,8 +70,11 @@ public class DefaultDoc2VecService implements Doc2VecService {
         final SettingModel setting = settingService.getSettings();
         final File activeModelFile = new File(StringUtils.joinWith(File.separator, "model", setting.getActivemodel()));
 
-        final  ParagraphVectors paragraphVectors = WordVectorSerializer.readParagraphVectors(activeModelFile);
-        paragraphVectors.setTokenizerFactory(tokenizerFactory);
+        final  ParagraphVectors paragraphVectors = activeModelFile.exists() ? WordVectorSerializer.readParagraphVectors(activeModelFile) : null ;
+
+        if (Objects.nonNull(paragraphVectors)) {
+            paragraphVectors.setTokenizerFactory(tokenizerFactory);
+        }
 
         return paragraphVectors;
     }

@@ -51,7 +51,7 @@ public class DefaultChatFacade implements ChatFacade {
             return chatService.converse((ChatSessionModel) sessionExist.get(), uuid, text);
         } catch (Exception e) {
             LOG.error("There is error during processing", e);
-            return new ChatLabelData(uuid, i18NService.getLabel("error.message", "error.message"));
+            return new ChatLabelData(uuid, e.getMessage());
         }
     }
 
