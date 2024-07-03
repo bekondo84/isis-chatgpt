@@ -81,11 +81,11 @@ public class DefaultChatService implements ChatService, InitializingBean {
         final INDArray labelVec = lookupTable.vector(label);
         //Compute the cosine similaraty
         double cosim = Transforms.cosineSim(userInputVector, labelVec);
-
+         LOG.info(String.format("---cleanText: %s   - cosim :%s", cleanText, cosim));
         //Build the ansew base on the value of the cosim
         final SettingModel setting = settingService.getSettings();
-        final double acceptanceRate = Objects.nonNull(setting) ? setting.getAcceptancerate() : 0.70d;
-        final double uncertaintyrate = Objects.nonNull(setting) ? setting.getUncertaintyrate() : 0.3d;
+        final double acceptanceRate = (Objects.nonNull(setting) ? setting.getAcceptancerate() : 70d)/100;
+        final double uncertaintyrate = (Objects.nonNull(setting) ? setting.getUncertaintyrate() : 30d)/100;
         final ChatLogModel chaLog = new ChatLogModel();
 
         if (cosim >= acceptanceRate) {
@@ -128,10 +128,15 @@ public class DefaultChatService implements ChatService, InitializingBean {
         chaLog.setInput(text);
         chaLog.setSession(session);
         chaLog.setDateCreation(new Date());
-        chaLog.setCode(UUID.fromString(StringUtils.join(uuid, new Date().toString() ,(new Random().nextInt(10000)))).toString());
+        chaLog.setCode(UUID.nameUUIDFromBytes(StringUtils.join(uuid, new Date().toString() ,(new Random().nextInt(10000))).getBytes()).toString());
         modelService.save(chaLog);
 
         return new ChatLabelData(chaLog.getCode(), chaLog.getOutput());
+    }
+
+    @Override
+    public void reloadModel() throws Exception {
+        afterPropertiesSet();
     }
 
     @Override

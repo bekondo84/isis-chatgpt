@@ -1,5 +1,6 @@
 package cm.nzock.actions;
 
+import cm.nzock.services.ChatService;
 import cm.nzock.services.Doc2VecService;
 import cm.platform.basecommerce.core.actions.AbstractAction;
 import cm.platform.basecommerce.core.actions.annotations.ActionService;
@@ -34,6 +35,8 @@ public class GeneratorLogAction extends AbstractAction {
     protected ObjectMapper mapper;
     @Autowired
     private Doc2VecService doc2VecService;
+    @Autowired
+    private ChatService chatService;
 
 
     @Override
@@ -51,7 +54,9 @@ public class GeneratorLogAction extends AbstractAction {
             getModelService().save(item);
             item = (GeneratorLogModel) getModelService().find(item);
             context.put(DATA, getModelService().findAndConvertToJson(item));
-        } catch (IOException e) {
+            //Reload model
+            chatService.reloadModel();
+        } catch (Exception e) {
             LOG.error("There is error during model generation", e);
         }
 

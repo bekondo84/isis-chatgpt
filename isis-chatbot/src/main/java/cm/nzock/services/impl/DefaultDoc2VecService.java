@@ -3,6 +3,8 @@ package cm.nzock.services.impl;
 import cm.nzock.iterators.SetenceIterator;
 import cm.nzock.services.Doc2VecService;
 import cm.platform.basecommerce.core.settings.SettingModel;
+import cm.platform.basecommerce.core.utils.FilesHelper;
+import cm.platform.basecommerce.services.ModelService;
 import cm.platform.basecommerce.services.SettingService;
 import cm.platform.basecommerce.services.exceptions.ModelServiceException;
 import org.apache.commons.io.FileUtils;
@@ -35,7 +37,8 @@ public class DefaultDoc2VecService implements Doc2VecService {
     private SetenceIterator iterator;
     @Autowired
     private TokenizerFactory tokenizerFactory;
-
+    @Autowired
+    private ModelService modelService;
 
     @Override
     public String buildAndSaveModel() throws ModelServiceException, IOException {
@@ -52,30 +55,42 @@ public class DefaultDoc2VecService implements Doc2VecService {
 
         paragraphVectors.fit();
 
-        final File modelSaveDirectory = new File(StringUtils.joinWith(File.separator, "model", "isis-".concat(SDF.format(new Date())).concat(".zip")));
+        final File modelSaveDirectory = new File(StringUtils.joinWith(File.separator, FilesHelper.getDataDir().getPath(), "model", "isis-".concat(SDF.format(new Date())).concat(".zip")));
 
         if (Objects.nonNull(setting) && StringUtils.isNoneBlank(setting.getActivemodel())) {
             final File currentFile = new File(setting.getActivemodel());
-            final File archiveFile = new File(StringUtils.joinWith(File.separator, "model", "archives", currentFile.getName()));
+            final File archiveFile = new File(StringUtils.joinWith(File.separator, FilesHelper.getDataDir().getPath(), "model", "archives", currentFile.getName()));
             FileUtils.moveFile(currentFile, archiveFile);
         }
 
         WordVectorSerializer.writeParagraphVectors(paragraphVectors, modelSaveDirectory);
 
+        //Update Setting
+        setting.setActivemodel(modelSaveDirectory.getName());
+        modelService.save(setting);
+
         return modelSaveDirectory.getName();
     }
 
     @Override
-    public ParagraphVectors buiildParagraphVectorsFromModel() throws IOException {
-        final SettingModel setting = settingService.getSettings();
-        final File activeModelFile = new File(StringUtils.joinWith(File.separator, "model", setting.getActivemodel()));
+    public ParagraphVectors buiildParagraphVectorsFromModel()  {
 
-        final  ParagraphVectors paragraphVectors = activeModelFile.exists() ? WordVectorSerializer.readParagraphVectors(activeModelFile) : null ;
+        ParagraphVectors paragraphVectors = null;
 
-        if (Objects.nonNull(paragraphVectors)) {
-            paragraphVectors.setTokenizerFactory(tokenizerFactory);
+        try {
+            final SettingModel setting = settingService.getSettings();
+            if (Objects.nonNull(setting) && StringUtils.isNoneBlank(setting.getActivemodel())) {
+                final File activeModelFile = new File(StringUtils.joinWith(File.separator, FilesHelper.getDataDir().getPath(), "model", setting.getActivemodel()));
+
+                paragraphVectors = activeModelFile.exists() ? WordVectorSerializer.readParagraphVectors(activeModelFile) : null;
+
+                if (Objects.nonNull(paragraphVectors)) {
+                    paragraphVectors.setTokenizerFactory(tokenizerFactory);
+                }
+            }
+        } catch (IOException ex) {
+            LOG.error("", ex);
         }
-
         return paragraphVectors;
     }
 }

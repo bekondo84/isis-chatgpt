@@ -73,9 +73,11 @@ public class DefaultChatFacade implements ChatFacade {
         String uuid = null ;
         if (Objects.isNull(user)) {
             uuid = UUID.randomUUID().toString();
-        } else  {
-            uuid = UUID.fromString(user.getCode()).toString();
+        } else {
+            uuid = UUID.nameUUIDFromBytes(user.getCode().getBytes()).toString();
         }
-        return UUID.fromString(StringUtils.join(uuid, new Date().toString(), new Random().nextInt(50000))).toString();
+        uuid = UUID.nameUUIDFromBytes(StringUtils.join(uuid, new Date().toString(), new Random().nextInt(50000)).getBytes()).toString();
+
+        return uuid;
     }
 }

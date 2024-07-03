@@ -12,4 +12,6 @@ public interface ChatService {
      * @return
      */
     ChatLabelData converse(final ChatSessionModel session, final String uuid, final String text) throws Exception;
+
+    void reloadModel() throws Exception;
 }

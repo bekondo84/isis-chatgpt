@@ -195,8 +195,8 @@
                 <deployment typecode="00107" table="t_generatorlog"/>
                 <attributes>
                     <attribute qualifier="modelname" type="java.lang.String">
-                        <persistence type="persistent"/>
-                        <modifiers />
+                        <persistence type="persistent" />
+                        <modifiers unique="true"/>
                     </attribute>
                 </attributes>
             </itemtype>
@@ -321,6 +321,15 @@
                     </attribute>
                 </attributes>
             </itemtype>
+            <!--<itemtype code="User" package="cm.platform.basecommerce.core.security" persist="true" generate="true" abstract="true">
+                <deployment table="t_user" typecode="000017"/>
+                <attributes>
+                    <attribute qualifier="uuid" type="java.lang.String">
+                        <persistence type="persistent"/>
+                        <modifiers  />
+                    </attribute>
+                </attributes>
+            </itemtype>-->
         </itemgroup>
     </itemtypes>
 </items>
