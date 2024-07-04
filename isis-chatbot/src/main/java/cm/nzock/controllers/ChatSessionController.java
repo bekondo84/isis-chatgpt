@@ -45,12 +45,6 @@ public class ChatSessionController {
         return ResponseEntity.ok(sessionFacade.createOrUpdate(sessionData));
     }
 
-    @GetMapping("/init/{session}")
-    ResponseEntity<List<ChatLogModel>> sessionInit(Authentication authentication, @PathVariable("session")Long session) {
-       assert Objects.nonNull(authentication): "No authentication found";
-       return ResponseEntity.ok(sessionFacade.initChatSession(session));
-    }
-
     @GetMapping
     ResponseEntity<List<ChatSessionData>> getUserSessions() {
        return ResponseEntity.ok(sessionFacade.getUserSessions());

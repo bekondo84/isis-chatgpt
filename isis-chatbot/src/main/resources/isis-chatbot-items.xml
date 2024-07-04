@@ -229,7 +229,7 @@
                 <attributes>
                     <attribute qualifier="code" type="java.lang.String">
                         <persistence type="persistent"/>
-                        <modifiers optional="false" unique="false"/>
+                        <modifiers optional="false" unique="true"/>
                     </attribute>
                     <attribute qualifier="uuid" type="java.lang.String">
                         <persistence type="persistent"/>
@@ -258,6 +258,11 @@
                     <attribute qualifier="state" type="ChatLogState">
                         <persistence type="persistent"/>
                         <modifiers />
+                    </attribute>
+                    <attribute qualifier="initial" type="java.lang.Boolean">
+                        <persistence type="persistent"/>
+                        <modifiers initial="true"/>
+                        <defaultvalue>java.lang.Boolean.valueOf("false")</defaultvalue>
                     </attribute>
                 </attributes>
             </itemtype>

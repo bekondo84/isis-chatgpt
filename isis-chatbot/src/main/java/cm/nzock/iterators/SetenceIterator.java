@@ -1,5 +1,6 @@
 package cm.nzock.iterators;
 
+import cm.nzock.services.TokenizerFactoryService;
 import cm.platform.basecommerce.core.knowledge.KnowledgeModel;
 import cm.platform.basecommerce.core.knowledge.KnowlegeLabelModel;
 import cm.platform.basecommerce.services.FlexibleSearchService;
@@ -25,7 +26,7 @@ public class SetenceIterator implements LabelAwareIterator {
     @Autowired
     private FlexibleSearchService flexibleSearchService;
     @Autowired
-    private TokenizerFactory tokenizerFactory;
+    private TokenizerFactoryService tokenizerFactoryService;
     private AtomicInteger  cursor = new AtomicInteger(0);
     private LabelsSource labelsSource ;
 
@@ -47,6 +48,8 @@ public class SetenceIterator implements LabelAwareIterator {
         LabelledDocument document =new LabelledDocument();
         //Tokenized
         List<String> words =new ArrayList<>();
+
+        final TokenizerFactory tokenizerFactory = tokenizerFactoryService.tokenizerFactory();
 
         if (StringUtils.isNoneBlank(knowledge.getTemplate())) {
             words.addAll(tokenizerFactory.create(knowledge.getTemplate()).getTokens());

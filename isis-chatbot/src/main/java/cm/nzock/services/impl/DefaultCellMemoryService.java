@@ -26,12 +26,16 @@ public class DefaultCellMemoryService implements CellMemoryService {
     @Override
     public void save(String id, String value) {
         final CellMemoryModel cell = new CellMemoryModel();
+
         cell.setId(id);
         cell.setValue(value);
 
         final Optional dbCellContent = flexibleSearchService.find(cell);
 
-        dbCellContent.ifPresent(cellmemory -> cell.setValue(StringUtils.joinWith(" ", ((CellMemoryModel)cellmemory).getValue(), value)));
+        dbCellContent.ifPresent(cellmemory -> {
+            cell.setPK(((CellMemoryModel)cellmemory).getPK());
+            cell.setValue(StringUtils.joinWith(" ", ((CellMemoryModel)cellmemory).getValue(), value));
+        });
 
         //Save the cellmemory content
         try {

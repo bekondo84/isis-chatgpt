@@ -55,7 +55,7 @@ public class GeneratorLogAction extends AbstractAction {
             item = (GeneratorLogModel) getModelService().find(item);
             context.put(DATA, getModelService().findAndConvertToJson(item));
             //Reload model
-            chatService.reloadModel();
+            //chatService.reloadModel();
         } catch (Exception e) {
             LOG.error("There is error during model generation", e);
         }

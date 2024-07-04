@@ -1,9 +1,10 @@
 package cm.nzock.services.impl;
 
-import cm.nzock.beans.ChatLabelData;
+import cm.nzock.beans.ChatData;
 import cm.nzock.services.CellMemoryService;
 import cm.nzock.services.ChatService;
 import cm.nzock.services.Doc2VecService;
+import cm.nzock.services.TokenizerFactoryService;
 import cm.nzock.transformers.Processor;
 import cm.platform.basecommerce.core.chat.CellMemoryModel;
 import cm.platform.basecommerce.core.chat.ChatLogModel;
@@ -12,6 +13,7 @@ import cm.platform.basecommerce.core.enums.ChatLogState;
 import cm.platform.basecommerce.core.knowledge.KnowlegeLabelModel;
 import cm.platform.basecommerce.core.settings.SettingModel;
 import cm.platform.basecommerce.services.*;
+import cm.platform.basecommerce.tools.persistence.RestrictionsContainer;
 import org.apache.commons.lang3.BooleanUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.deeplearning4j.models.embeddings.inmemory.InMemoryLookupTable;
@@ -31,11 +33,11 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
-public class DefaultChatService implements ChatService, InitializingBean {
+public class DefaultChatService implements ChatService {
     private static final Logger LOG = LoggerFactory.getLogger(DefaultChatService.class);
 
     @Autowired
-    private TokenizerFactory tokenizerFactory;
+    private TokenizerFactoryService tokenizerFactoryService;
     @Autowired
     private Doc2VecService doc2VecService;
     @Autowired
@@ -54,13 +56,14 @@ public class DefaultChatService implements ChatService, InitializingBean {
     private ApplicationContext applicationContext;
     @Autowired
     private ModelService modelService;
+    @Autowired(required = false)
     private ParagraphVectors paragraphVectors;
 
 
     @Override
-    public ChatLabelData converse(ChatSessionModel session, String uuid, String text) throws Exception {
+    public ChatData converse(ChatSessionModel session, String uuid, String text) throws Exception {
         assert text != null : "Chat text can't be null";
-        assert Objects.nonNull(paragraphVectors) : "No model found \nPlease generate new model and try again";
+        assert Objects.nonNull(paragraphVectors): "No model has detected\n Please set the model and restart the service";
 
         final List<String> inputTokens = new ArrayList<>();
 
@@ -68,6 +71,7 @@ public class DefaultChatService implements ChatService, InitializingBean {
         //The purpose of cellMemory is to store previous conversation
         CellMemoryModel cellMemory = cellMemoryService.read(uuid);
 
+        TokenizerFactory tokenizerFactory = tokenizerFactoryService.tokenizerFactory();
         if (Objects.nonNull(cellMemory)) {
             inputTokens.addAll(tokenizerFactory.create(cellMemory.getValue()).getTokens());
         }
@@ -116,7 +120,7 @@ public class DefaultChatService implements ChatService, InitializingBean {
             chaLog.setState(enumerationService.getEnumerationValue(ChatLogState.UNCERTAIN.getCode(), ChatLogState.class));
             chaLog.setOutput(i18NService.getLabel("Uncertainly.message", "Sorry i don't have more information to answer this question\nPlease can you give me more details"));
             //Save the current context for next echange
-            cellMemoryService.save(uuid, text);
+            cellMemoryService.forget(uuid);
         } else {
             //Unkow question informe the user
             cellMemoryService.forget(uuid);
@@ -130,18 +134,15 @@ public class DefaultChatService implements ChatService, InitializingBean {
         chaLog.setDateCreation(new Date());
         chaLog.setCode(UUID.nameUUIDFromBytes(StringUtils.join(uuid, new Date().toString() ,(new Random().nextInt(10000))).getBytes()).toString());
         modelService.save(chaLog);
-
-        return new ChatLabelData(chaLog.getCode(), chaLog.getOutput());
+        //Reload the chatLog to fetch the PK
+        RestrictionsContainer container = RestrictionsContainer.newInstance();
+        container.addEq("code", chaLog.getCode());
+        if (Objects.nonNull(session)) {
+            container.addEq("session.pk", session.getPK());
+        }
+        final ChatLogModel dbChatLog = (ChatLogModel) flexibleSearchService.doSearch(ChatLogModel.class, container, new HashMap<>(), new HashSet<>(), 0, -1).stream()
+                .findAny().get();
+        return new ChatData(dbChatLog.getPK(), chaLog.getInput(), chaLog.getOutput(), false);
     }
 
-    @Override
-    public void reloadModel() throws Exception {
-        afterPropertiesSet();
-    }
-
-    @Override
-    public void afterPropertiesSet() throws Exception {
-          LOG.info("******************** Loading active model *****************");
-          paragraphVectors = doc2VecService.buiildParagraphVectorsFromModel();
-    }
 }

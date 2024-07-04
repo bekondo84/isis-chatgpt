@@ -1,7 +1,7 @@
 package cm.nzock.facades;
 
 import cm.nzock.beans.ChatSessionData;
-import cm.platform.basecommerce.core.chat.ChatLogModel;
+import cm.nzock.beans.ChatData;
 import cm.platform.basecommerce.services.exceptions.ModelServiceException;
 
 import java.util.List;
@@ -17,7 +17,7 @@ public interface ChatSessionFacade {
 
     void delete(final Long pk) throws ModelServiceException;
 
-    List<ChatLogModel> initChatSession(final Long session) ;
+    List<ChatData> initChatSession(final Long session, final String uuids) throws ModelServiceException;
 
     List<ChatSessionData> getUserSessions() ;
 }

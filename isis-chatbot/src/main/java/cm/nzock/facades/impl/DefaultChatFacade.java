@@ -1,6 +1,6 @@
 package cm.nzock.facades.impl;
 
-import cm.nzock.beans.ChatLabelData;
+import cm.nzock.beans.ChatData;
 import cm.nzock.facades.ChatFacade;
 import cm.nzock.services.ChatService;
 import cm.platform.basecommerce.core.chat.ChatSessionModel;
@@ -8,8 +8,6 @@ import cm.platform.basecommerce.core.exception.NzockException;
 import cm.platform.basecommerce.core.security.UserModel;
 import cm.platform.basecommerce.core.settings.SettingModel;
 import cm.platform.basecommerce.services.*;
-import cm.platform.basecommerce.tools.persistence.RestrictionsContainer;
-import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -39,19 +37,20 @@ public class DefaultChatFacade implements ChatFacade {
 
 
     @Override
-    public ChatLabelData converse(Long session, String uuid, String text) {
-        assert Objects.nonNull(session): "Session PK is null";
-
+    public ChatData converse(Long session, String uuid, String text) {
+       // assert Objects.nonNull(session): "Session PK is null";
         try {
-            Optional sessionExist = flexibleSearchService.find(session, ChatSessionModel._TYPECODE);
+            ChatSessionModel chatSession = null;
 
-            if (!sessionExist.isPresent()) {
-                LOG.error("No chatSesion found PK : %s", session);
+            if (Objects.nonNull(session)) {
+                Optional sessionExist = flexibleSearchService.find(session, ChatSessionModel._TYPECODE);
+
+                chatSession = sessionExist.isPresent() ? chatSession = (ChatSessionModel) sessionExist.get() : null;
             }
-            return chatService.converse((ChatSessionModel) sessionExist.get(), uuid, text);
+            return chatService.converse(chatSession, uuid, text);
         } catch (Exception e) {
             LOG.error("There is error during processing", e);
-            return new ChatLabelData(uuid, e.getMessage());
+            throw new  NzockException(e);
         }
     }
 

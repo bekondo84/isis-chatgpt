@@ -1,6 +1,7 @@
 package cm.nzock.facades.impl;
 
 import cm.nzock.beans.ChatSessionData;
+import cm.nzock.beans.ChatData;
 import cm.nzock.controllers.ChatSessionController;
 import cm.nzock.converters.ConvertChatSessionDataToModel;
 import cm.nzock.converters.ConvertChatSessionModelToData;
@@ -10,14 +11,16 @@ import cm.platform.basecommerce.core.chat.ChatSessionModel;
 import cm.platform.basecommerce.core.security.EmployeeModel;
 import cm.platform.basecommerce.core.security.UserModel;
 import cm.platform.basecommerce.services.FlexibleSearchService;
+import cm.platform.basecommerce.services.I18NService;
 import cm.platform.basecommerce.services.ModelService;
 import cm.platform.basecommerce.services.UserService;
 import cm.platform.basecommerce.services.exceptions.ModelServiceException;
 import cm.platform.basecommerce.tools.persistence.RestrictionsContainer;
+import org.apache.commons.collections4.CollectionUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
 
 import java.util.*;
@@ -39,6 +42,8 @@ public class DefaultChatSessionFacade implements ChatSessionFacade {
     private ConvertChatSessionModelToData revertConvert;
     @Autowired
     private UserService userService;
+    @Autowired
+    private I18NService i18NService;
 
 
     @Override
@@ -88,11 +93,35 @@ public class DefaultChatSessionFacade implements ChatSessionFacade {
     }
 
     @Override
-    public List<ChatLogModel> initChatSession(Long session) {
+    public List<ChatData> initChatSession(Long session, String uuid) throws ModelServiceException {
         RestrictionsContainer container = RestrictionsContainer.newInstance();
-        container.addEq("session.pk", session);
-        List<ChatLogModel> chats = flexibleSearchService.doSearch(ChatLogModel.class, container, new HashMap<>(), new HashSet<>(), 0, 50);
-        return chats;
+
+        if (Objects.nonNull(session)) {
+            container.addEq("session.pk", session);
+        }
+        container.addEq("uuid", uuid);
+        final List<ChatLogModel> chats = flexibleSearchService.doSearch(ChatLogModel.class, container, new HashMap<>(), new HashSet<>(), 0, 50);
+
+        ChatLogModel chatLog;
+        if (CollectionUtils.isEmpty(chats)) {
+            chatLog = new ChatLogModel();
+            chatLog.setInitial(Boolean.TRUE);
+            chatLog.setUuid(uuid);
+            chatLog.setDate(new Date());
+            chatLog.setInput(null);
+            chatLog.setOutput(i18NService.getLabel("chatbot.welcome.message","chatbot.welcome.message"));
+            if (Objects.nonNull(session)) {
+                chatLog.setSession((ChatSessionModel) flexibleSearchService.find(session, ChatSessionModel._TYPECODE).orElse(null));
+            }
+            chatLog.setDateCreation(new Date());
+            chatLog.setCode(UUID.nameUUIDFromBytes(StringUtils.join(uuid, new Date().toString(), (new Random().nextInt(10000))).getBytes()).toString());
+            modelService.save(chatLog);
+           flexibleSearchService.find(chatLog.getCode(), "code", ChatLogModel._TYPECODE)
+                   .ifPresent(obj -> chats.add((ChatLogModel) obj));
+        }
+        return chats.stream()
+                .map(cht -> new ChatData(cht.getPK(), cht.getInput(), cht.getOutput(), cht.getInitial()))
+                .collect(Collectors.toList());
     }
 
     @Override

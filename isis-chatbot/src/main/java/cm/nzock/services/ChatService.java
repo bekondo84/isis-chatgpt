@@ -1,8 +1,7 @@
 package cm.nzock.services;
 
-import cm.nzock.beans.ChatLabelData;
+import cm.nzock.beans.ChatData;
 import cm.platform.basecommerce.core.chat.ChatSessionModel;
-import cm.platform.basecommerce.services.exceptions.ModelServiceException;
 
 public interface ChatService {
 
@@ -11,7 +10,6 @@ public interface ChatService {
      * @param text
      * @return
      */
-    ChatLabelData converse(final ChatSessionModel session, final String uuid, final String text) throws Exception;
+    ChatData converse(final ChatSessionModel session, final String uuid, final String text) throws Exception;
 
-    void reloadModel() throws Exception;
 }
