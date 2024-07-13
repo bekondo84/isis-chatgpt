@@ -8,6 +8,10 @@ INSERT_UPDATE MetaType;code[unique=true];codeType;typeName;parent;generate;persi
 ;Log;00105;cm.platform.basecommerce.core.knowledge.LogModel;  ;true;true;true;  
 ;ImportLog;00106;cm.platform.basecommerce.core.knowledge.ImportLogModel;Log;true;true;false;  
 ;GeneratorLog;00107;cm.platform.basecommerce.core.knowledge.GeneratorLogModel;Log;true;true;false;  
+;SolrIgnoreWords;00116;cm.platform.basecommerce.core.solr.SolrIgnoreWordsModel;  ;true;true;false;  
+;EvalutionEntry;00113;cm.platform.basecommerce.core.knowledge.EvalutionEntryModel;  ;true;true;false;  
+;Evaluation;00112;cm.platform.basecommerce.core.knowledge.EvaluationModel;  ;true;true;false;  
+;SolrUpdate;00115;cm.platform.basecommerce.core.solr.SolrUpdateModel;  ;true;true;false;  
 ;ChatSession;00108;cm.platform.basecommerce.core.chat.ChatSessionModel;  ;true;true;false;  
 ;ChatLog;00110;cm.platform.basecommerce.core.chat.ChatLogModel;  ;true;true;false;  
 ;CellMemory;00111;cm.platform.basecommerce.core.chat.CellMemoryModel;  ;true;true;false;  
@@ -20,10 +24,6 @@ INSERT_UPDATE MetaType;code[unique=true];codeType;typeName;parent;generate;persi
 INSERT_UPDATE ScriptType;code
 ;GROOVY
 ;JavaScript
-INSERT_UPDATE ImportLogState;code
-;LOAD
-;IMPORT
-;ERROR
 INSERT_UPDATE ImportLogType;code
 ;APPEND
 ;RESET
@@ -31,5 +31,9 @@ INSERT_UPDATE ChatLogState;code
 ;KNOWN
 ;UNCERTAIN
 ;UNKNOWN
+INSERT_UPDATE ImportLogState;code
+;LOAD
+;IMPORT
+;ERROR
 
 

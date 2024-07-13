@@ -100,7 +100,8 @@ public class DefaultChatSessionFacade implements ChatSessionFacade {
             container.addEq("session.pk", session);
         }
         container.addEq("uuid", uuid);
-        final List<ChatLogModel> chats = flexibleSearchService.doSearch(ChatLogModel.class, container, new HashMap<>(), new HashSet<>(), 0, 50);
+        int count = (int) flexibleSearchService.count(ChatLogModel.class, container);
+        final List<ChatLogModel> chats = flexibleSearchService.doSearch(ChatLogModel.class, container, new HashMap<>(), new HashSet<>(), count-50, 50);
 
         ChatLogModel chatLog;
         if (CollectionUtils.isEmpty(chats)) {
@@ -121,7 +122,12 @@ public class DefaultChatSessionFacade implements ChatSessionFacade {
         }
         return chats.stream()
                 .map(cht -> new ChatData(cht.getPK(), cht.getInput(), cht.getOutput(), cht.getInitial()))
-                .collect(Collectors.toList());
+                .sorted(new Comparator<ChatData>() {
+                    @Override
+                    public int compare(ChatData o1, ChatData o2) {
+                        return o1.getPk().compareTo(o2.getPk());
+                    }
+                }).collect(Collectors.toList());
     }
 
     @Override

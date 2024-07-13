@@ -3,11 +3,13 @@ package cm.nzock.facades.impl;
 import cm.nzock.beans.ChatData;
 import cm.nzock.facades.ChatFacade;
 import cm.nzock.services.ChatService;
+import cm.platform.basecommerce.core.chat.ChatLogModel;
 import cm.platform.basecommerce.core.chat.ChatSessionModel;
 import cm.platform.basecommerce.core.exception.NzockException;
 import cm.platform.basecommerce.core.security.UserModel;
 import cm.platform.basecommerce.core.settings.SettingModel;
 import cm.platform.basecommerce.services.*;
+import cm.platform.basecommerce.services.exceptions.ModelServiceException;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -35,6 +37,13 @@ public class DefaultChatFacade implements ChatFacade {
     private SettingService settingService;
    // private static final String DEFAULT_SESSION= "";
 
+
+    @Override
+    public void userReview(final Long pk, final Boolean value) throws ModelServiceException {
+        final ChatLogModel chatLog = (ChatLogModel) flexibleSearchService.find(pk, ChatLogModel._TYPECODE).get();
+        chatLog.setReview(value);
+        modelService.save(chatLog);
+    }
 
     @Override
     public ChatData converse(Long session, String uuid, String text) {

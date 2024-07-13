@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<context xmlns="http://www.isis.cm/config/isis-item"
+         xmlns:ls="http://www.isis.cm/config/list-view"
+         xmlns:a="http://www.isis.cm/config/isis-actions"
+         xmlns:e="http://www.isis.cm/config/editor-area"
+         action="solrIgnoreWordsAction">
+    <ls:list-view>
+        <ls:list>
+            <ls:column qualifier="label"  search="false"/>
+            <ls:column qualifier="date"  search="false" widget="datetime-local"/>
+        </ls:list>
+    </ls:list-view>
+    <e:editor-area update="false">
+        <e:component>
+            <e:common>
+                <e:form>
+                    <e:section columns="2" position="4" name="commons">
+                        <e:field qualifier="label" />
+                        <e:field qualifier="date" editable="false"/>
+                    </e:section>
+                </e:form>
+            </e:common>
+        </e:component>
+        <a:actions>
+            <a:action name="type.SolrIgnoreWords.index_btn"  code="synchronize.action" icon="fa-solid fa-magnifying-glass" position="workflow" />
+        </a:actions>
+    </e:editor-area>
+</context>

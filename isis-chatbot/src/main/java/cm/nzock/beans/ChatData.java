@@ -7,12 +7,25 @@ public class ChatData implements Serializable {
     private String input;
     private String value;
     private boolean initial;
+    private double cosim;
+    private boolean review = true;
 
     public ChatData(Long pk, String input, String value, boolean initial) {
         this.pk = pk;
         this.input = input;
         this.value = value;
         this.initial = initial;
+    }
+
+    public ChatData(Long pk, String input, String value, double cosim, boolean initial) {
+        this.pk = pk;
+        this.input = input;
+        this.value = value;
+        this.initial = initial;
+        this.cosim = cosim;
+    }
+
+    public ChatData() {
     }
 
     public Long getPk() {
@@ -45,5 +58,21 @@ public class ChatData implements Serializable {
 
     public void setInitial(boolean initial) {
         this.initial = initial;
+    }
+
+    public double getCosim() {
+        return cosim;
+    }
+
+    public void setCosim(double cosim) {
+        this.cosim = cosim;
+    }
+
+    public boolean isReview() {
+        return review;
+    }
+
+    public void setReview(boolean review) {
+        this.review = review;
     }
 }

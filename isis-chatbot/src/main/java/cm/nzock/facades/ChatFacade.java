@@ -1,6 +1,7 @@
 package cm.nzock.facades;
 
 import cm.nzock.beans.ChatData;
+import cm.platform.basecommerce.services.exceptions.ModelServiceException;
 
 import java.util.Map;
 
@@ -11,4 +12,6 @@ public interface ChatFacade {
     Map<String, String> getGeneralSettings() ;
 
     String generateUuid();
+
+    void userReview(final Long pk, final Boolean value) throws ModelServiceException;
 }

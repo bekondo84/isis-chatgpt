@@ -25,7 +25,7 @@ import java.util.Objects;
 
 @Configuration
 @ComponentScan(basePackages = {"cm.nzock"})
-@Import({BaseCommerceServiceConfig.class, SecurityConfig.class, BaseCommerceFacadesConfig.class})
+@Import({BaseCommerceServiceConfig.class, SecurityConfig.class, BaseCommerceFacadesConfig.class, SolrConfig.class})
 public class ApplicationConfig implements WebMvcConfigurer
 {
     private static final Logger LOG = LoggerFactory.getLogger(ApplicationConfig.class);

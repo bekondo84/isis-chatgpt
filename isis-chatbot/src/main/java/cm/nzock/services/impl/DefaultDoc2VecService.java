@@ -4,6 +4,7 @@ import cm.nzock.iterators.SetenceIterator;
 import cm.nzock.services.Doc2VecService;
 import cm.nzock.services.TokenizerFactoryService;
 import cm.platform.basecommerce.core.exception.NzockException;
+import cm.platform.basecommerce.core.knowledge.EvaluationModel;
 import cm.platform.basecommerce.core.settings.SettingModel;
 import cm.platform.basecommerce.core.utils.FilesHelper;
 import cm.platform.basecommerce.services.ModelService;
@@ -53,17 +54,11 @@ public class DefaultDoc2VecService implements Doc2VecService {
         if (Objects.isNull(setting)) {
             throw new NzockException(String.format(CONFIGURATION_ERROR));
         }
-        final ParagraphVectors paragraphVectors =new ParagraphVectors.Builder()
-                .learningRate(Objects.nonNull(setting) ? setting.getLearningrate():0.2d)
-                .minLearningRate(Objects.nonNull(setting) ? setting.getMinlearningrate() : 0.08)
-                .batchSize(Objects.nonNull(setting) ? setting.getBatchsize(): 50)
-                .epochs(Objects.nonNull(setting) ? setting.getEpochs() : 10)
-                .iterate(iterator)
-                .trainWordVectors(true)
-                .tokenizerFactory(tokenizerFactoryService.tokenizerFactory())
-                .build();
-
-        paragraphVectors.fit();
+        double learningRate = Objects.nonNull(setting) ? setting.getLearningrate() : 0.2d;
+        double minLearningRate = Objects.nonNull(setting) ? setting.getMinlearningrate() : 0.08;
+        int batchSize = Objects.nonNull(setting) ? setting.getBatchsize() : 50;
+        int numEpochs = Objects.nonNull(setting) ? setting.getEpochs() : 10;
+        final ParagraphVectors paragraphVectors = getParagraphVectors(learningRate, minLearningRate, batchSize, numEpochs);
 
         final File modelSaveDirectory = new File(StringUtils.joinWith(File.separator, FilesHelper.getDataDir().getPath(), "model", "isis-".concat(SDF.format(new Date())).concat(".zip")));
 
@@ -82,8 +77,9 @@ public class DefaultDoc2VecService implements Doc2VecService {
         return modelSaveDirectory.getName();
     }
 
+
     @Override
-    public ParagraphVectors buiildParagraphVectorsFromModel()  {
+    public ParagraphVectors buildParagraphVectorsFromModel()  {
 
         ParagraphVectors paragraphVectors = null;
 
@@ -96,6 +92,7 @@ public class DefaultDoc2VecService implements Doc2VecService {
 
                 if (Objects.nonNull(paragraphVectors)) {
                     paragraphVectors.setTokenizerFactory(tokenizerFactoryService.tokenizerFactory());
+                    //paragraphVectors.fit();
                 }
             } else if (Objects.isNull(setting)) {
                 throw new NzockException(String.format(CONFIGURATION_ERROR));
@@ -105,6 +102,30 @@ public class DefaultDoc2VecService implements Doc2VecService {
         } catch (IOException ex) {
             LOG.error("", ex);
         }
+        return paragraphVectors;
+    }
+
+    @Override
+    public ParagraphVectors buildParagraphVectors(EvaluationModel evaluation) throws IOException {
+        assert Objects.nonNull(evaluation):"Evaluation object is null";
+        return getParagraphVectors(evaluation.getLearningrate(), evaluation.getMinlearningrate(), evaluation.getBatchsize(), evaluation.getEpochs());
+    }
+
+    private ParagraphVectors getParagraphVectors(double learningRate, double minLearningRate, int batchSize, int numEpochs) {
+        final ParagraphVectors paragraphVectors =new ParagraphVectors.Builder()
+                //.minWordFrequency(1)
+                .learningRate(learningRate)
+                .minLearningRate(minLearningRate)
+                .batchSize(batchSize)
+                .epochs(numEpochs)
+                .labelsSource(iterator.getLabelsSource())
+                .iterate(iterator)
+                .trainWordVectors(true)
+                .tokenizerFactory(tokenizerFactoryService.tokenizerFactory())
+                //.windowSize(5)
+                .build();
+
+        paragraphVectors.fit();
         return paragraphVectors;
     }
 

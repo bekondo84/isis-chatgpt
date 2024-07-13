@@ -9,6 +9,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.deeplearning4j.text.documentiterator.LabelAwareIterator;
 import org.deeplearning4j.text.documentiterator.LabelledDocument;
 import org.deeplearning4j.text.documentiterator.LabelsSource;
+import org.deeplearning4j.text.tokenization.tokenizer.preprocessor.StringCleaning;
 import org.deeplearning4j.text.tokenization.tokenizerfactory.TokenizerFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -47,18 +48,24 @@ public class SetenceIterator implements LabelAwareIterator {
 
         LabelledDocument document =new LabelledDocument();
         //Tokenized
-        List<String> words =new ArrayList<>();
+        final List<String> words =new ArrayList<>();
+        final StringBuffer stringBuffer = new StringBuffer();
 
         final TokenizerFactory tokenizerFactory = tokenizerFactoryService.tokenizerFactory();
 
         if (StringUtils.isNoneBlank(knowledge.getTemplate())) {
-            words.addAll(tokenizerFactory.create(knowledge.getTemplate()).getTokens());
+            //words.addAll(tokenizerFactory.create(knowledge.getTemplate()).getTokens());
+            stringBuffer.append(knowledge.getTemplate().toLowerCase()).append(StringUtils.SPACE);
         }
         if (StringUtils.isNoneBlank(knowledge.getKeywords())) {
-            words.addAll(tokenizerFactory.create(knowledge.getKeywords()).getTokens());
+            //words.addAll(Arrays.stream(knowledge.getKeywords().split(";")).collect(Collectors.toList()));
+            stringBuffer.append(knowledge.getKeywords().replace(";", StringUtils.SPACE).toLowerCase());
         }
-        document.setContent(StringUtils.joinWith(" ", words));
+        //StringUtils.joinWith(StringUtils.SPACE, tokenizerFactory.create(stringBuffer.toString()).getTokens())
+        document.setContent(StringCleaning.stripPunct(stringBuffer.toString()));
+        LOG.info(String.format("Iterator text : %s", document.getContent()));
         document.addLabel(knowledge.getLabel().getCode());
+        document.setId(String.valueOf(index));
         return document;
     }
 

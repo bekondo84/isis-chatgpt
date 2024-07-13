@@ -1,0 +1,41 @@
+<context xmlns="http://www.isis.cm/config/isis-item"
+         xmlns:ls="http://www.isis.cm/config/list-view"
+         xmlns:a="http://www.isis.cm/config/isis-actions"
+         xmlns:e="http://www.isis.cm/config/editor-area"
+         action="evaluationAction">
+    <ls:list-view>
+        <ls:list>
+            <ls:column qualifier="filename"  search="true" show="true"/>
+            <ls:column qualifier="description"  search="true" show="true"/>
+            <ls:column qualifier="learningrate" show="true"/>
+            <ls:column qualifier="minlearningrate" show="true"/>
+            <ls:column qualifier="batchsize" show="true"/>
+            <ls:column qualifier="epochs" show="true"/>
+            <ls:column qualifier="batchsize" show="true"/>
+        </ls:list>
+    </ls:list-view>
+    <e:editor-area searchKey="filename">
+        <e:component>
+            <e:common>
+                <e:form>
+                    <e:section columns="2" position="4" name="commons">
+                        <e:field qualifier="filename" widget="file" updatable="false"/>
+                        <e:field qualifier="description"/>
+                    </e:section>
+                    <e:section columns="4" position="3" name="Evaluation.settings" header="true">
+                        <e:field qualifier="learningrate"  widget="number"/>
+                        <e:field qualifier="minlearningrate"  widget="number"/>
+                        <e:field qualifier="batchsize"  widget="number"/>
+                        <e:field qualifier="epochs"  widget="number"/>
+                    </e:section>
+                    <e:section columns="1" position="2" name="commons">
+                        <e:field qualifier="results"  widget="onetomany"/>
+                    </e:section>
+                </e:form>
+            </e:common>
+        </e:component>
+        <a:actions>
+            <a:action name="type.Evaluation.evaluate_btn" code="evaluate.action" icon="fa-solid fa-magnifying-glass" position="workflow" />
+        </a:actions>
+    </e:editor-area>
+</context>

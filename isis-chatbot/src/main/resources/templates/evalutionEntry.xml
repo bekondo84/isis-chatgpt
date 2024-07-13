@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<context xmlns="http://www.isis.cm/config/isis-item"
+         xmlns:ls="http://www.isis.cm/config/list-view"
+         xmlns:s="http://www.isis.cm/config/isis-search"
+         xmlns:e="http://www.isis.cm/config/editor-area"
+         action="generatorLogAction">
+    <ls:list-view>
+        <ls:list>
+            <ls:column qualifier="text"  search="false"/>
+            <ls:column qualifier="knowledge"  search="false"/>
+            <ls:column qualifier="label"  search="false"/>
+            <ls:column qualifier="value"  search="false" />
+            <ls:column qualifier="cosim" search="true" />
+            <ls:column qualifier="status"  search="false" widget="switch"/>
+        </ls:list>
+    </ls:list-view>
+    <e:editor-area create="false" update="false" createOnField="false" delete="false">
+        <e:component>
+            <e:common>
+                <e:form>
+                    <e:section columns="2" position="4" name="commons">
+                        <e:field qualifier="cosim" editable="false"/>
+                    </e:section>
+                    <e:section columns="2" position="4" name="commons">
+                        <e:field qualifier="text"  widget="textarea"/>
+                        <e:field qualifier="value"  widget="textarea"/>
+                        <e:field qualifier="knowledge"  widget="text"/>
+                        <e:field qualifier="label"  widget="text"/>
+                        <e:field qualifier="status"  widget="switch"/>
+                    </e:section>
+                </e:form>
+            </e:common>
+        </e:component>
+    </e:editor-area>
+</context>

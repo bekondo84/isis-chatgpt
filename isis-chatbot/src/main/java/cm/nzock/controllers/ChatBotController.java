@@ -48,4 +48,9 @@ public class ChatBotController {
         return ResponseEntity.ok(sessionFacade.initChatSession(session, uuid));
     }
 
+    @PutMapping("/review/{pk}/{value}")
+    public void userReview(@PathVariable("pk")Long pk, @PathVariable("value") Boolean value) throws ModelServiceException {
+        chatFacade.userReview(pk, value);
+    }
+
 }

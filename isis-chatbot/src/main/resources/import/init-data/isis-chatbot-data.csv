@@ -11,9 +11,14 @@ INSERT_UPDATE PageTemplate;code[unique=true];name[lang=fr];name[lang=en];path;mo
                           ;ChatSession; Session des échanges;log conversation echange;chatSession.xml;isis-chatbot;PAGE
                           ;UserAccessLevel; Niveaux d'accès de l'utilisateur;User access level;userAccessLevel.xml;isis-chatbot;PAGE
                           ;KnowlegeLabel; Reponses aux questions;anwser to questions;knowlegeLabel.xml;isis-chatbot;PAGE
+                          ;EvalutionEntry; Evaluation entries;Evaluations entries;evalutionEntry.xml;isis-chatbot;PAGE
+                          ;Evaluation; Evaluation du modèle ;anwser to questions;evaluation.xml;isis-chatbot;PAGE
+                          ;SolrIgnoreWords; Template des execution des calculs des mots à ignorer ;anwser to questions;solrIgnoreWords.xml;isis-chatbot;PAGE
 
 ##Custom user actions
 INSERT_UPDATE ActionNode;code[unique=true];label[lang=fr];label[lang=en];module(name);action;method
                         ;validation.action;Valider le fichier de connaissance;Knowledge file validator;isis-chatbot;importLogAction;validation
                         ;importation.action;Ouvrir le compte utilisateur;Open user account;isis-chatbot;importLogAction;importation
                         ;label.handler;Intercepteur du champ label;label field handler;isis-chatbot;knowledgeAction;labelHandler
+                        ;evaluate.action;Construction et evaluation du modèle;label field handler;isis-chatbot;evaluationAction;evaluate
+                        ;synchronize.action;Indexation de la liste des mots a ignorer;label field handler;isis-chatbot;solrIgnoreWordsAction;synchronize

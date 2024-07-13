@@ -24,6 +24,15 @@
         </enumtype>
     </enumtypes>
     <relations>
+        <relation code="evaluation_relation">
+            <deployment table="t_evals" typecode="00114"/>
+            <source qualifier="evaluation" type="Evaluation" cardinality="one" collectiontype="list">
+                <modifiers group="evaluations"/>
+            </source>
+            <target qualifier="results" type="EvalutionEntry" cardinality="many" navigable="false">
+                <modifiers/>
+            </target>
+        </relation>
         <relation code="UserAccessLevel_R">
             <deployment typecode="00109" table="t_useraccesslevel_r"/>
             <source qualifier="account" type="Employee" collectiontype="list" cardinality="many">
@@ -200,6 +209,94 @@
                     </attribute>
                 </attributes>
             </itemtype>
+            <itemtype code="SolrIgnoreWords" package="cm.platform.basecommerce.core.solr" persist="true" generate="true">
+                <deployment typecode="00116" table="t_solrignowords"/>
+                <attributes>
+                    <attribute qualifier="date" type="java.util.Date">
+                        <persistence type="persistent" />
+                        <modifiers />
+                    </attribute>
+                    <attribute qualifier="label" type="java.lang.String">
+                        <persistence type="persistent" />
+                        <modifiers optional="false"/>
+                    </attribute>
+                </attributes>
+            </itemtype>
+            <itemtype code="EvalutionEntry" package="cm.platform.basecommerce.core.knowledge" generate="true" persist="true">
+                <deployment typecode="00113" table="t_evalrow"/>
+                <attributes>
+                    <attribute qualifier="text" type="java.lang.String">
+                        <persistence type="persistent"/>
+                        <modifiers />
+                    </attribute>
+                    <attribute qualifier="value" type="java.lang.String">
+                        <persistence type="persistent"/>
+                        <modifiers />
+                    </attribute>
+                    <attribute qualifier="knowledge" type="java.lang.String">
+                        <persistence type="persistent"/>
+                        <modifiers />
+                    </attribute>
+                    <attribute qualifier="label" type="java.lang.String">
+                        <persistence type="persistent"/>
+                        <modifiers />
+                    </attribute>
+                    <attribute qualifier="status" type="java.lang.Boolean">
+                        <persistence type="persistent"/>
+                        <modifiers />
+                    </attribute>
+                    <attribute qualifier="cosim" type="java.lang.Double">
+                        <persistence type="persistent"/>
+                        <modifiers />
+                    </attribute>
+                </attributes>
+            </itemtype>
+            <itemtype code="Evaluation" persist="true" generate="true" package="cm.platform.basecommerce.core.knowledge">
+                <deployment typecode="00112" table="t_eval"/>
+                <attributes>
+                    <attribute qualifier="filename" type="java.lang.String">
+                        <persistence type="persistent"/>
+                        <modifiers optional="false"/>
+                    </attribute>
+                    <attribute qualifier="description" type="java.lang.String">
+                        <persistence type="persistent"/>
+                        <modifiers optional="false"/>
+                    </attribute>
+                    <attribute qualifier="learningrate" type="java.lang.Double">
+                        <persistence type="persistent"/>
+                        <modifiers initial="true"/>
+                        <defaultvalue>java.lang.Double.valueOf("0.20")</defaultvalue>
+                    </attribute>
+                    <attribute qualifier="minlearningrate" type="java.lang.Double">
+                        <persistence type="persistent"/>
+                        <modifiers initial="true"/>
+                        <defaultvalue>java.lang.Double.valueOf("0.08")</defaultvalue>
+                    </attribute>
+                    <attribute qualifier="batchsize" type="java.lang.Integer">
+                        <persistence type="persistent"/>
+                        <modifiers initial="true"/>
+                        <defaultvalue>java.lang.Integer.valueOf("50")</defaultvalue>
+                    </attribute>
+                    <attribute qualifier="epochs" type="java.lang.Integer">
+                        <persistence type="persistent"/>
+                        <modifiers initial="true"/>
+                        <defaultvalue>java.lang.Integer.valueOf("10")</defaultvalue>
+                    </attribute>
+                </attributes>
+            </itemtype>
+            <itemtype code="SolrUpdate" package="cm.platform.basecommerce.core.solr" persist="true" generate="true" >
+                <deployment table="t_solrupdate" typecode="00115"/>
+                <attributes>
+                    <attribute qualifier="label" type="java.lang.String">
+                        <persistence type="persistent"/>
+                        <modifiers  />
+                    </attribute>
+                    <attribute qualifier="data" type="java.util.Date">
+                        <persistence type="persistent"/>
+                        <modifiers  />
+                    </attribute>
+                </attributes>
+            </itemtype>
         </itemgroup>
         <itemgroup name="Chat management">
             <itemtype code="ChatSession" package="cm.platform.basecommerce.core.chat" generate="true" persist="true" searchKey="label">
@@ -264,6 +361,15 @@
                         <modifiers initial="true"/>
                         <defaultvalue>java.lang.Boolean.valueOf("false")</defaultvalue>
                     </attribute>
+                    <attribute qualifier="review" type="java.lang.Boolean">
+                        <persistence type="persistent"/>
+                        <modifiers initial="true"/>
+                        <defaultvalue>java.lang.Boolean.valueOf("true")</defaultvalue>
+                    </attribute>
+                    <attribute qualifier="cosim" type="java.lang.Double">
+                        <persistence type="persistent"/>
+                        <modifiers />
+                    </attribute>
                 </attributes>
             </itemtype>
             <itemtype code="CellMemory" package="cm.platform.basecommerce.core.chat" persist="true" generate="true">
@@ -324,17 +430,19 @@
                         <modifiers initial="true"/>
                         <defaultvalue>java.lang.String.valueOf("ISIS Chat")</defaultvalue>
                     </attribute>
-                </attributes>
-            </itemtype>
-            <!--<itemtype code="User" package="cm.platform.basecommerce.core.security" persist="true" generate="true" abstract="true">
-                <deployment table="t_user" typecode="000017"/>
-                <attributes>
-                    <attribute qualifier="uuid" type="java.lang.String">
+                    <attribute qualifier="solrhost" type="java.lang.String">
                         <persistence type="persistent"/>
-                        <modifiers  />
+                        <modifiers initial="true"/>
+                        <defaultvalue>java.lang.String.valueOf("http://localhost:8983/solr")</defaultvalue>
+                    </attribute>
+                    <attribute qualifier="embeddedSolr" type="java.lang.Boolean">
+                        <persistence type="persistent"/>
+                        <modifiers initial="true"/>
+                        <defaultvalue>java.lang.Boolean.valueOf("false")</defaultvalue>
                     </attribute>
                 </attributes>
-            </itemtype>-->
+            </itemtype>
+            <!---->
         </itemgroup>
     </itemtypes>
 </items>

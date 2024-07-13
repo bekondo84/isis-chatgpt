@@ -5,12 +5,15 @@
          xmlns:e="http://www.isis.cm/config/editor-area">
     <ls:list-view>
         <ls:list create="false">
-            <ls:column qualifier="session" widget="manytoone"  search="true"/>
+            <ls:column qualifier="session" widget="manytoone"  search="true" show="false"/>
             <ls:column qualifier="date"  search="false" widget="datetime-local" show="false"/>
-            <ls:column qualifier="by" search="true" widget="manytoone" />
+            <ls:column qualifier="by" search="true" show="false" />
+            <ls:column qualifier="uuid" search="true"  />
             <ls:column qualifier="state" search="true" widget="manytoone"  />
             <ls:column qualifier="input" search="true"   />
             <ls:column qualifier="output" search="true" />
+            <ls:column qualifier="cosim" search="true" />
+            <ls:column qualifier="review" search="true" />
         </ls:list>
     </ls:list-view>
     <e:editor-area>
@@ -18,10 +21,13 @@
             <e:common>
                 <e:form>
                     <e:section columns="2" position="4" name="commons">
-                        <e:field qualifier="session" editable="false" updatable="false"/>
                         <e:field qualifier="date"  widget="datetime-local" editable="false" updatable="false"/>
-                        <e:field qualifier="by"  editable="false" updatable="false" widget="manytoone"/>
+                        <e:field qualifier="cosim" editable="false" updatable="false"/>
                         <e:field qualifier="state"  editable="false" updatable="false" widget="manytoone"/>
+                        <e:field qualifier="session" editable="false" updatable="false"/>
+                        <e:field qualifier="by"  editable="false" updatable="false" widget="manytoone"/>
+                        <e:field qualifier="uuid"  editable="false" updatable="false"/>
+                        <e:field qualifier="review"  editable="false" updatable="false"/>
                     </e:section>
                     <e:section position="3" columns="1" name="type.ChatLog.input.name" header="true">
                         <e:field qualifier="input" widget="textarea" editable="false" updatable="false" />
