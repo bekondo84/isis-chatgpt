@@ -14,4 +14,6 @@ public interface ChatFacade {
     String generateUuid();
 
     void userReview(final Long pk, final Boolean value) throws ModelServiceException;
+
+    String getTitle() ;
 }

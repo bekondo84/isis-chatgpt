@@ -46,6 +46,12 @@ public class DefaultChatFacade implements ChatFacade {
     }
 
     @Override
+    public String getTitle() {
+        final SettingModel setting = settingService.getSettings();
+        return Objects.nonNull(setting) ? setting.getChattitle() : null;
+    }
+
+    @Override
     public ChatData converse(Long session, String uuid, String text) {
        // assert Objects.nonNull(session): "Session PK is null";
         try {

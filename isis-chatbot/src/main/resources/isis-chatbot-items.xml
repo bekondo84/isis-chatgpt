@@ -430,6 +430,11 @@
                         <modifiers initial="true"/>
                         <defaultvalue>java.lang.String.valueOf("ISIS Chat")</defaultvalue>
                     </attribute>
+                    <attribute qualifier="chattitle" type="java.lang.String">
+                        <persistence type="persistent"/>
+                        <modifiers initial="true"/>
+                        <defaultvalue>java.lang.String.valueOf("ISIS-CHAT")</defaultvalue>
+                    </attribute>
                     <attribute qualifier="solrhost" type="java.lang.String">
                         <persistence type="persistent"/>
                         <modifiers initial="true"/>
