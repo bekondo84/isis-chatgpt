@@ -6,6 +6,7 @@ import cm.nzock.services.ChatService;
 import cm.platform.basecommerce.core.chat.ChatLogModel;
 import cm.platform.basecommerce.core.chat.ChatSessionModel;
 import cm.platform.basecommerce.core.exception.NzockException;
+import cm.platform.basecommerce.core.security.EmployeeModel;
 import cm.platform.basecommerce.core.security.UserModel;
 import cm.platform.basecommerce.core.settings.SettingModel;
 import cm.platform.basecommerce.services.*;
@@ -76,21 +77,28 @@ public class DefaultChatFacade implements ChatFacade {
         final Map<String, String> settings = new HashMap<>();
 
         settings.put("username", user.getName());
-        settings.put("chatname", setting.getChatname());
+        settings.put("chatname", setting.getChattitle());
 
         return settings;
     }
 
     @Override
-    public String generateUuid() {
+    public String generateUuid() throws ModelServiceException {
         final UserModel user = userService.getCurrentUser();
         String uuid = null ;
         if (Objects.isNull(user)) {
             uuid = UUID.randomUUID().toString();
+            uuid = UUID.nameUUIDFromBytes(StringUtils.join(uuid, new Date().toString(), new Random().nextInt(50000)).getBytes()).toString();
         } else {
-            uuid = UUID.nameUUIDFromBytes(user.getCode().getBytes()).toString();
+            final EmployeeModel account = (EmployeeModel) flexibleSearchService.find(user.getPK(), EmployeeModel._TYPECODE).get();
+            uuid = account.getUuid();
+            if (StringUtils.isBlank(uuid)) {
+                uuid = UUID.nameUUIDFromBytes(user.getCode().getBytes()).toString();
+                uuid = UUID.nameUUIDFromBytes(StringUtils.join(uuid, new Date().toString(), new Random().nextInt(50000)).getBytes()).toString();
+                account.setUuid(uuid);
+                modelService.save(account);
+            }
         }
-        uuid = UUID.nameUUIDFromBytes(StringUtils.join(uuid, new Date().toString(), new Random().nextInt(50000)).getBytes()).toString();
 
         return uuid;
     }

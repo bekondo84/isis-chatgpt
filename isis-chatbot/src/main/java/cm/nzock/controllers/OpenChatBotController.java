@@ -32,7 +32,7 @@ public class OpenChatBotController {
     }
 
     @GetMapping("/uuid")
-    public ResponseEntity<String> getUuid() {
+    public ResponseEntity<String> getUuid() throws ModelServiceException {
          return ResponseEntity.ok(chatFacade.generateUuid());
     }
 

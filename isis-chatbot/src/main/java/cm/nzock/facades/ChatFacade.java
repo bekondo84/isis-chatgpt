@@ -11,7 +11,7 @@ public interface ChatFacade {
 
     Map<String, String> getGeneralSettings() ;
 
-    String generateUuid();
+    String generateUuid() throws ModelServiceException;
 
     void userReview(final Long pk, final Boolean value) throws ModelServiceException;
 

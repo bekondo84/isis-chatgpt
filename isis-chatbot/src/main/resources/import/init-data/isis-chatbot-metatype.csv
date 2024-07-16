@@ -21,6 +21,9 @@ INSERT_UPDATE MetaType;code[unique=true];codeType;typeName;parent;generate;persi
 ;ImportLogState;importlogstate;cm.platform.basecommerce.core.enums.ImportLogState;EnumerateValue;true;true;false;  
 ;ChatLogState;chatlogstate;cm.platform.basecommerce.core.enums.ChatLogState;EnumerateValue;true;true;false;  
 ;EnumerateValue;enumeratevalue;cm.platform.basecommerce.core.EnumerateValue;EnumerateValue;true;false;false;Enum base class
+INSERT_UPDATE ScriptType;code
+;GROOVY
+;JavaScript
 INSERT_UPDATE ImportLogType;code
 ;APPEND
 ;RESET
@@ -32,8 +35,5 @@ INSERT_UPDATE ChatLogState;code
 ;KNOWN
 ;UNCERTAIN
 ;UNKNOWN
-INSERT_UPDATE ScriptType;code
-;GROOVY
-;JavaScript
 
 

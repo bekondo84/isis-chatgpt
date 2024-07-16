@@ -65,7 +65,12 @@
             <itemtype code="Employee" package="cm.platform.basecommerce.core.security" generate="true" persist="true" extends="User"  searchKey="name">
                 <description>Users account</description>
                 <deployment table="employee" typecode="000029"/>
-                <attributes></attributes>
+                <attributes>
+                    <attribute qualifier="uuid" type="java.lang.String">
+                        <persistence type="persistent"/>
+                        <modifiers  />
+                    </attribute>
+                </attributes>
             </itemtype>
         </itemgroup>
         <itemgroup name="Knowledge management">

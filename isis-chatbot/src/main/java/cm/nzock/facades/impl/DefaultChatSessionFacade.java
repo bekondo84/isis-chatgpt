@@ -15,7 +15,9 @@ import cm.platform.basecommerce.services.I18NService;
 import cm.platform.basecommerce.services.ModelService;
 import cm.platform.basecommerce.services.UserService;
 import cm.platform.basecommerce.services.exceptions.ModelServiceException;
+import cm.platform.basecommerce.tools.persistence.DAOUtilis;
 import cm.platform.basecommerce.tools.persistence.RestrictionsContainer;
+import org.apache.commons.collections.MapUtils;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
@@ -101,7 +103,7 @@ public class DefaultChatSessionFacade implements ChatSessionFacade {
         }
         container.addEq("uuid", uuid);
         int count = (int) flexibleSearchService.count(ChatLogModel.class, container);
-        final List<ChatLogModel> chats = flexibleSearchService.doSearch(ChatLogModel.class, container, new HashMap<>(), new HashSet<>(), count-50, 50);
+        final List<ChatLogModel> chats = flexibleSearchService.doSearch(ChatLogModel.class, container, Collections.singletonMap("pk", DAOUtilis.OrderType.DESC), new HashSet<>(), 0, 50);
 
         ChatLogModel chatLog;
         if (CollectionUtils.isEmpty(chats)) {
