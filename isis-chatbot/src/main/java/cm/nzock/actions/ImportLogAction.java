@@ -70,8 +70,14 @@ public class ImportLogAction extends AbstractAction {
         importLog = (ImportLogModel) importLogOp.get();
         final Resource resource = resourceService.load(importLog.getPK(), importLog.getFilename());
         //Process forst sheet contai
-        List<List<String>> knowledgeSheet = excelService.excelToJava(resource.getInputStream(),0);
-        List<List<String>> labelSheet = excelService.excelToJava(resource.getInputStream(),1).stream().skip(1).collect(Collectors.toList());
+        List<List<String>> knowledgeSheet = excelService.excelToJava(resource.getInputStream(),0)
+                .stream().skip(1)
+                .filter(line -> line.stream().allMatch(StringUtils::isNotBlank))
+                .collect(Collectors.toList());
+        List<List<String>> labelSheet = excelService.excelToJava(resource.getInputStream(),1)
+                .stream().skip(1)
+                .filter(line -> line.stream().allMatch(StringUtils::isNotBlank))
+                .collect(Collectors.toList());
         //Container of errors
         final StringBuffer errors = new StringBuffer();
 
@@ -161,8 +167,14 @@ public class ImportLogAction extends AbstractAction {
         importLog = (ImportLogModel) importLogOp.get();
         final Resource resource = resourceService.load(importLog.getPK(), importLog.getFilename());
         //Process forst sheet contai
-        List<List<String>> knowledgeSheet = excelService.excelToJava(resource.getInputStream(),0);
-        List<List<String>> labelSheet = excelService.excelToJava(resource.getInputStream(),1);
+        List<List<String>> knowledgeSheet = excelService.excelToJava(resource.getInputStream(),0)
+                .stream().skip(1)
+                .filter(line ->line.stream().allMatch(StringUtils::isNotBlank))
+                .collect(Collectors.toList());
+        List<List<String>> labelSheet = excelService.excelToJava(resource.getInputStream(),1)
+                .stream().skip(1)
+                .filter(line ->line.stream().allMatch(StringUtils::isNotBlank))
+                .collect(Collectors.toList());
         //Container of errors
         final StringBuffer errors = new StringBuffer();
 

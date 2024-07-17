@@ -11,6 +11,7 @@ import cm.platform.basecommerce.core.knowledge.EvalutionEntryModel;
 import cm.platform.basecommerce.core.knowledge.KnowledgeModel;
 import cm.platform.basecommerce.services.*;
 import cm.platform.basecommerce.services.exceptions.ModelServiceException;
+import cm.platform.basecommerce.tools.persistence.RestrictionsContainer;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.io.FileUtils;
@@ -24,9 +25,7 @@ import org.springframework.http.HttpMethod;
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.nio.charset.Charset;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.stream.Collectors;
 
 import static cm.platform.basecommerce.core.utils.IsisConstants.ActionsKeys.DATA;
@@ -49,6 +48,26 @@ public class EvaluationAction extends AbstractAction {
     private Doc2VecService doc2VecService;
     @Autowired
     private ExcelService excelService;
+
+    @Override
+    public Map<String, String> createOrUpdate(Map<String, String> context) throws ModelServiceException, ClassNotFoundException, JsonProcessingException {
+        EvaluationModel item = mapper.readValue(context.get(DATA) , EvaluationModel.class);
+        getModelService().save(item);
+        RestrictionsContainer container = RestrictionsContainer.newInstance();
+        container.addEq("filename", item.getFilename());
+        Optional optional = flexibleSearchService.doSearch(EvaluationModel.class, container, new HashMap<>(), new HashSet<>(), 0, -1)
+                .stream()
+                .max(new Comparator() {
+                    @Override
+                    public int compare(Object o1, Object o2) {
+                        return ((EvaluationModel)o1).getPK().compareTo(((EvaluationModel)o2).getPK());
+                    }
+                });
+        if (optional.isPresent()) {
+            context.put(DATA, mapper.writeValueAsString(optional.get()));
+        }
+        return context;
+    }
 
     @Action(value = "evaluate", scope = HttpMethod.POST)
     public Map evaluate(Map<String, String> context) throws IOException, ModelServiceException {
@@ -84,7 +103,9 @@ public class EvaluationAction extends AbstractAction {
         evaluation.setResults(evaluations);
 
         modelService.save(evaluation);
-        context.put(DATA, getModelService().findAndConvertToJson(evaluation));
+
+        evaluation = (EvaluationModel) flexibleSearchService.find(evaluation.getPK(), EvaluationModel._TYPECODE).get();
+        context.put(DATA, mapper.writeValueAsString(evaluation));
         return  context;
     }
 

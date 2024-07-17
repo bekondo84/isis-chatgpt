@@ -71,7 +71,7 @@ public class DefaultChatService implements ChatService {
             //The purpose of cellMemory is to store previous conversation
             CellMemoryModel cellMemory = cellMemoryService.read(uuid);
 
-            LabelData result = computeLabelFromUserinput(text, cellMemory);
+            LabelData result = computeLabelFromUserinput(text, paragraphVectors, cellMemory);
             chaLog.setCosim(result.cosim);
 
             if (result.cosim >= result.acceptanceRate) {
@@ -79,22 +79,21 @@ public class DefaultChatService implements ChatService {
                 final KnowlegeLabelModel knowlegeLabel = (KnowlegeLabelModel) flexibleSearchService.find(result.label,"code", KnowlegeLabelModel._TYPECODE).get();
                 chaLog.setState(enumerationService.getEnumerationValue(ChatLogState.KNOWN.getCode(), ChatLogState.class));
                 //Process the lknowledgeLabel
-                if (StringUtils.isNoneBlank(knowlegeLabel.getAction())) {
+                LOG.info(String.format("inside --------converse------------------------ %s -------------StringUtils.isNotBlank(knowlegeLabel.getAction()) : %s", knowlegeLabel.getAction(), StringUtils.isNotBlank(knowlegeLabel.getAction())));
+                if (StringUtils.isNotBlank(knowlegeLabel.getAction())) {
                     Processor processor = (Processor) applicationContext.getBean(knowlegeLabel.getAction());
-                    chaLog.setOutput(processor.proceed(result.label));
-                } else if (StringUtils.isNoneBlank(knowlegeLabel.getScript()) && Objects.nonNull(knowlegeLabel.getType())) {
+                    chaLog.setOutput(processor.proceed(knowlegeLabel.getLabel()));
+                } else if (StringUtils.isNotBlank(knowlegeLabel.getScript()) && Objects.nonNull(knowlegeLabel.getType())) {
                     //Execute the script on the label before return
-                    chaLog.setOutput(result.label);
+                    chaLog.setOutput(knowlegeLabel.getLabel());
                 } else {
-                    chaLog.setOutput(result.label);
-
+                    chaLog.setOutput(knowlegeLabel.getLabel());
                 }
-                chaLog.setOutput(knowlegeLabel.getLabel());
 
                 if (BooleanUtils.isTrue(knowlegeLabel.getEndLabel())) {
                     cellMemoryService.forget(uuid);
                 } else {
-                    cellMemoryService.save(uuid, knowlegeLabel.getLabel());
+                    cellMemoryService.save(uuid, chaLog.getOutput());
                 }
 
             } else if (result.cosim >= result.uncertaintyrate) {
@@ -135,11 +134,11 @@ public class DefaultChatService implements ChatService {
 
        @Override
     public ChatData converse(ParagraphVectors paragraphVectors, String text) throws Exception {
-        LabelData label = computeLabelFromUserinput(text, null);
+        LabelData label = computeLabelFromUserinput(text, paragraphVectors, null);
         return new ChatData(null, text, label.label, label.cosim, false);
     }
 
-    private LabelData computeLabelFromUserinput(String text, CellMemoryModel cellMemory) {
+    private LabelData computeLabelFromUserinput(String text, final ParagraphVectors paragraphVectors, CellMemoryModel cellMemory) {
         //final List<String> inputTokens = new ArrayList<>();
         final StringBuffer inputBuffer = new StringBuffer();
 
