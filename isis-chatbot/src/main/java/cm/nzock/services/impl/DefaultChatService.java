@@ -11,9 +11,13 @@ import cm.platform.basecommerce.core.chat.ChatLogModel;
 import cm.platform.basecommerce.core.chat.ChatSessionModel;
 import cm.platform.basecommerce.core.enums.ChatLogState;
 import cm.platform.basecommerce.core.knowledge.KnowlegeLabelModel;
+import cm.platform.basecommerce.core.security.EmployeeModel;
+import cm.platform.basecommerce.core.security.UserModel;
 import cm.platform.basecommerce.core.settings.SettingModel;
 import cm.platform.basecommerce.services.*;
+import cm.platform.basecommerce.services.exceptions.ModelServiceException;
 import cm.platform.basecommerce.tools.persistence.RestrictionsContainer;
+import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.BooleanUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.deeplearning4j.models.embeddings.inmemory.InMemoryLookupTable;
@@ -31,6 +35,7 @@ import org.springframework.context.ApplicationContext;
 import org.springframework.stereotype.Service;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 @Service
 public class DefaultChatService implements ChatService {
@@ -77,25 +82,33 @@ public class DefaultChatService implements ChatService {
             if (result.cosim >= result.acceptanceRate) {
                 //Answer the question
                 final KnowlegeLabelModel knowlegeLabel = (KnowlegeLabelModel) flexibleSearchService.find(result.label,"code", KnowlegeLabelModel._TYPECODE).get();
-                chaLog.setState(enumerationService.getEnumerationValue(ChatLogState.KNOWN.getCode(), ChatLogState.class));
-                //Process the lknowledgeLabel
-                LOG.info(String.format("inside --------converse------------------------ %s -------------StringUtils.isNotBlank(knowlegeLabel.getAction()) : %s", knowlegeLabel.getAction(), StringUtils.isNotBlank(knowlegeLabel.getAction())));
-                if (StringUtils.isNotBlank(knowlegeLabel.getAction())) {
-                    Processor processor = (Processor) applicationContext.getBean(knowlegeLabel.getAction());
-                    chaLog.setOutput(processor.proceed(knowlegeLabel.getLabel()));
-                } else if (StringUtils.isNotBlank(knowlegeLabel.getScript()) && Objects.nonNull(knowlegeLabel.getType())) {
-                    //Execute the script on the label before return
-                    chaLog.setOutput(knowlegeLabel.getLabel());
-                } else {
-                    chaLog.setOutput(knowlegeLabel.getLabel());
-                }
+                final UserModel user = userService.getCurrentUser();
 
-                if (BooleanUtils.isTrue(knowlegeLabel.getEndLabel())) {
-                    cellMemoryService.forget(uuid);
+                if (!checkIfUserCanAccessLabel(user, knowlegeLabel)) {
+                    String labelAcls = StringUtils.joinWith(";", CollectionUtils.emptyIfNull(knowlegeLabel.getAcls())
+                            .stream().map(acl -> acl.getCode()).collect(Collectors.toList())) ;
+                    String answer = String.format(i18NService.getLabel("chatbot.label.unauthorized", "chatbot.label.unauthorized"), labelAcls);
+                    chaLog.setOutput(answer);
                 } else {
-                    cellMemoryService.save(uuid, chaLog.getOutput());
-                }
+                    chaLog.setState(enumerationService.getEnumerationValue(ChatLogState.KNOWN.getCode(), ChatLogState.class));
+                    //Check if the user have the rigth to accès this level of informations
+                    //LOG.info(String.format("inside --------converse------------------------ %s -------------StringUtils.isNotBlank(knowlegeLabel.getAction()) : %s", knowlegeLabel.getAction(), StringUtils.isNotBlank(knowlegeLabel.getAction())));
+                    if (StringUtils.isNotBlank(knowlegeLabel.getAction())) {
+                        Processor processor = (Processor) applicationContext.getBean(knowlegeLabel.getAction());
+                        chaLog.setOutput(processor.proceed(knowlegeLabel.getLabel()));
+                    } else if (StringUtils.isNotBlank(knowlegeLabel.getScript()) && Objects.nonNull(knowlegeLabel.getType())) {
+                        //Execute the script on the label before return
+                        chaLog.setOutput(knowlegeLabel.getLabel());
+                    } else {
+                        chaLog.setOutput(knowlegeLabel.getLabel());
+                    }
 
+                    if (BooleanUtils.isTrue(knowlegeLabel.getEndLabel())) {
+                        cellMemoryService.forget(uuid);
+                    } else {
+                        cellMemoryService.save(uuid, chaLog.getOutput());
+                    }
+                }
             } else if (result.cosim >= result.uncertaintyrate) {
                 //Need more information to best anwer the question
                 chaLog.setState(enumerationService.getEnumerationValue(ChatLogState.UNCERTAIN.getCode(), ChatLogState.class));
@@ -132,7 +145,34 @@ public class DefaultChatService implements ChatService {
         return new ChatData(dbChatLog.getPK(), chaLog.getInput(), chaLog.getOutput(), false);
     }
 
-       @Override
+    /**
+     * Ckeck if the current user has the access level required to access this label
+     * @param user
+     * @param knowlegeLabel
+     * @return
+     * @throws ModelServiceException
+     */
+    private boolean checkIfUserCanAccessLabel(UserModel user, KnowlegeLabelModel knowlegeLabel) throws ModelServiceException {
+        List<String> labelAcls = CollectionUtils.emptyIfNull(knowlegeLabel.getAcls())
+                .stream().map(acl -> acl.getCode()).collect(Collectors.toList());
+
+        //Label with no acl is open to all
+        if (CollectionUtils.isEmpty(labelAcls)) {
+            return true;
+        }
+        //Anonymous user can't access to label with acl set
+        if (Objects.isNull(user)) {
+            return  false;
+        }
+        //Load the user account to extract user acl
+        final EmployeeModel connectAccount = (EmployeeModel) flexibleSearchService.find(user.getPK(), EmployeeModel._TYPECODE).get();
+        List<String> userAcls = CollectionUtils.emptyIfNull(connectAccount.getAccessLevel())
+                .stream().map(acl -> acl.getCode()).collect(Collectors.toList());
+        //Check if any user acl is in the label acl list
+        return CollectionUtils.containsAny(userAcls, labelAcls);
+    }
+
+    @Override
     public ChatData converse(ParagraphVectors paragraphVectors, String text) throws Exception {
         LabelData label = computeLabelFromUserinput(text, paragraphVectors, null);
         return new ChatData(null, text, label.label, label.cosim, false);

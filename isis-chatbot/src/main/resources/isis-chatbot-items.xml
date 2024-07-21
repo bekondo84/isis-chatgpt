@@ -42,6 +42,15 @@
                 <modifiers/>
             </target>
         </relation>
+        <relation code="Label_AccessLevel">
+            <deployment typecode="00117" table="r_label_acl"/>
+            <source qualifier="label" type="KnowlegeLabel" cardinality="many" collectiontype="list">
+                <modifiers />
+            </source>
+            <target qualifier="acls" type="UserAccessLevel" collectiontype="list" cardinality="many" navigable="false">
+                <modifiers/>
+            </target>
+        </relation>
     </relations>
     <itemtypes>
         <itemgroup name="Security Group">

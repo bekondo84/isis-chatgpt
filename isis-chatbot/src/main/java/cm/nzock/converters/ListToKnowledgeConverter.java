@@ -13,11 +13,19 @@ import org.springframework.stereotype.Component;
 
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 @Component
-public class ListToKnowledgeConverter implements Converter<List<String>, KnowledgeModel> {
+public class ListToKnowledgeConverter implements Converter<Map<String, List<String>>, KnowledgeModel> {
 
+    public static final String HEADER = "header";
+    public static final String ROW = "row";
+    public static final String CODE = "code";
+    public static final String TEXT = "text";
+    public static final String KEYWORDS = "keywords";
+    public static final String CLASS = "class";
+    public static final String LABELCODE = "labelcode";
     @Autowired
     private FlexibleSearchService flexibleSearchService;
     @Autowired
@@ -25,36 +33,37 @@ public class ListToKnowledgeConverter implements Converter<List<String>, Knowled
 
 
     @Override
-    public KnowledgeModel convert(List<String> source) throws ConvertionException {
+    public KnowledgeModel convert(Map<String, List<String>> source) throws ConvertionException {
+        final List<String> headers = source.get(HEADER);
+        final List<String> values = source.get(ROW);
         final KnowledgeModel knowledge = new KnowledgeModel();
         knowledge.setCreated(new Date());
        // knowledge.setCreatedby(userService.getCurrentUser());
-        source.forEach(entry -> {
-            switch (source.indexOf(entry)) {
-                case 0 :
-                   knowledge.setCode(entry); break;
-                case 1 :
-                    knowledge.setTemplate(entry); break;
-                case 2 :
-                    knowledge.setKeywords(entry); break;
-                case 3 :
-                    if (StringUtils.isNoneBlank(entry)) {
-                        flexibleSearchService.find(entry, "code", KnowledgeTypeModel._TYPECODE)
-                                .ifPresent(type -> knowledge.setCategory((KnowledgeTypeModel) type));
-                    }
-                    break;
-                case 4 :
-                    if (StringUtils.isNoneBlank(entry)) {
-                        flexibleSearchService.find(entry, "code", KnowlegeLabelModel._TYPECODE)
-                                .ifPresent(output -> {
-                                    knowledge.setLabel((KnowlegeLabelModel) output);
-                                    knowledge.setLabeltext(((KnowlegeLabelModel)output).getLabel());
-                                });
-                    }
-                    break;
-                default:
+
+        for (String header : headers) {
+            final int index = headers.indexOf(header);
+            String entry = index < values.size() ? values.get(index) : null;
+            if (header.equalsIgnoreCase(CODE)) {
+                knowledge.setCode(entry);
+            } else if (header.equalsIgnoreCase(TEXT)) {
+                knowledge.setTemplate(entry);
+            } else if (header.equalsIgnoreCase(KEYWORDS)) {
+                knowledge.setKeywords(entry);
+            } else if (header.equalsIgnoreCase(CLASS)) {
+                if (StringUtils.isNoneBlank(entry)) {
+                    flexibleSearchService.find(entry, CODE, KnowledgeTypeModel._TYPECODE)
+                            .ifPresent(type -> knowledge.setCategory((KnowledgeTypeModel) type));
+                }
+            } else if (header.equalsIgnoreCase(LABELCODE)) {
+                if (StringUtils.isNoneBlank(entry)) {
+                    flexibleSearchService.find(entry, CODE, KnowlegeLabelModel._TYPECODE)
+                            .ifPresent(output -> {
+                                knowledge.setLabel((KnowlegeLabelModel) output);
+                                knowledge.setLabeltext(((KnowlegeLabelModel)output).getLabel());
+                            });
+                }
             }
-        });
+        }
         return knowledge;
     }
 }

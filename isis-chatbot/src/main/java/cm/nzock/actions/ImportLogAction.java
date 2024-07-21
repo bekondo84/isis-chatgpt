@@ -9,6 +9,7 @@ import cm.platform.basecommerce.core.enums.ImportLogState;
 import cm.platform.basecommerce.core.knowledge.ImportLogModel;
 import cm.platform.basecommerce.core.knowledge.KnowledgeModel;
 import cm.platform.basecommerce.core.knowledge.KnowlegeLabelModel;
+import cm.platform.basecommerce.core.security.UserAccessLevelModel;
 import cm.platform.basecommerce.services.*;
 import cm.platform.basecommerce.services.exceptions.ModelServiceException;
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -32,6 +33,7 @@ import static cm.platform.basecommerce.core.utils.IsisConstants.ActionsKeys.DATA
 public class ImportLogAction extends AbstractAction {
 
     private static final Logger LOG = LoggerFactory.getLogger(ImportLogAction.class);
+    public static final String ACL = "acl";
 
     @Autowired
     private ModelService modelService;
@@ -71,11 +73,11 @@ public class ImportLogAction extends AbstractAction {
         final Resource resource = resourceService.load(importLog.getPK(), importLog.getFilename());
         //Process forst sheet contai
         List<List<String>> knowledgeSheet = excelService.excelToJava(resource.getInputStream(),0)
-                .stream().skip(1)
+                .stream()
                 .filter(line -> line.stream().allMatch(StringUtils::isNotBlank))
                 .collect(Collectors.toList());
         List<List<String>> labelSheet = excelService.excelToJava(resource.getInputStream(),1)
-                .stream().skip(1)
+                .stream()
                 .filter(line -> line.stream().allMatch(StringUtils::isNotBlank))
                 .collect(Collectors.toList());
         //Container of errors
@@ -88,9 +90,13 @@ public class ImportLogAction extends AbstractAction {
             importLog.setOutput(errors.toString());
         }
         //This session process to transformation
+        List<String> headers = knowledgeSheet.get(0);
         transformAndSaveLabelsData(labelSheet);
-        knowledgeSheet.forEach(line -> {
-            final KnowledgeModel knowledge = knowledgeConverter.convert(line);
+        knowledgeSheet.stream().skip(1).forEach(line -> {
+            final Map<String, List<String>> ctx = new HashMap<>();
+            ctx.put(ListToKnowledgeConverter.HEADER, headers);
+            ctx.put(ListToKnowledgeConverter.ROW, line);
+            final KnowledgeModel knowledge = knowledgeConverter.convert(ctx);
             try {
                 final Optional optional = flexibleSearchService.find(knowledge.getCode(), "code", KnowledgeModel._TYPECODE);
 
@@ -274,6 +280,7 @@ public class ImportLogAction extends AbstractAction {
             put(3, true);
             put(4, true);
             put(5, true);
+            put(6, true);
         }};
     }
 
@@ -291,8 +298,12 @@ public class ImportLogAction extends AbstractAction {
     }
 
     private void transformAndSaveLabelsData(List<List<String>> labelSheet) {
-        labelSheet.forEach(line -> {
-            final KnowlegeLabelModel label = knowledgeLabelConverter.convert(line);
+        final List<String> headers = labelSheet.get(0);
+        labelSheet.stream().skip(1).forEach(line -> {
+            final Map<String, List<String>> contenxt = new HashMap<>();
+            contenxt.put(ListToKnowledgeLabelConverter.HEADER, headers);
+            contenxt.put(ListToKnowledgeLabelConverter.ROW, line);
+            final KnowlegeLabelModel label = knowledgeLabelConverter.convert(contenxt);
             try {
                 Optional itemOp = flexibleSearchService.find(label.getCode(), "code", KnowlegeLabelModel._TYPECODE);
 
@@ -301,6 +312,20 @@ public class ImportLogAction extends AbstractAction {
                     label.setPK(item.getPK());
                 }
                 getModelService().save(label);
+                //Process ACL if exists
+                final boolean hasACL = headers.stream().anyMatch(header -> header.equalsIgnoreCase(ACL)) && headers.indexOf(ACL) < line.size();
+                if (hasACL) {
+                    //Build ACL list
+                    final List<UserAccessLevelModel> acls = new ArrayList<>();
+                    final String aclStr = line.get(headers.indexOf(ACL));
+
+                    for (String acl : aclStr.split(";")) {
+                        flexibleSearchService.find(acl, "code", UserAccessLevelModel._TYPECODE)
+                                .ifPresent(ac -> acls.add((UserAccessLevelModel) ac));
+                    }
+                    label.setAcls(acls);
+                    modelService.save(label);
+                }
             } catch (ModelServiceException e) {
                 LOG.error(String.format("Error while processing line %s of Label sheet", labelSheet.indexOf(line)), e);
             }

@@ -21,6 +21,7 @@
                 <e:form>
                     <e:section columns="2" position="10" name="type.Knowledge.section.commons">
                         <e:field qualifier="code" />
+                        <e:field qualifier="acls" widget="manytomany"/>
                         <e:field qualifier="endLabel" widget="switch" updatable="true" />
                     </e:section>
                     <e:section columns="1" position="9" name="type.Knowledge.section.commons">
