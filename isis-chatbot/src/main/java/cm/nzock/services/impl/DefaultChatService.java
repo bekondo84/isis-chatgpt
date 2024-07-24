@@ -10,6 +10,7 @@ import cm.platform.basecommerce.core.chat.CellMemoryModel;
 import cm.platform.basecommerce.core.chat.ChatLogModel;
 import cm.platform.basecommerce.core.chat.ChatSessionModel;
 import cm.platform.basecommerce.core.enums.ChatLogState;
+import cm.platform.basecommerce.core.knowledge.KnowledgeModuleModel;
 import cm.platform.basecommerce.core.knowledge.KnowlegeLabelModel;
 import cm.platform.basecommerce.core.security.EmployeeModel;
 import cm.platform.basecommerce.core.security.UserModel;
@@ -61,15 +62,16 @@ public class DefaultChatService implements ChatService {
     private ApplicationContext applicationContext;
     @Autowired
     private ModelService modelService;
-    @Autowired(required = false)
-    private ParagraphVectors paragraphVectors;
+    //@Autowired(required = false)
+   // private ParagraphVectors paragraphVectors;
 
 
     @Override
-    public ChatData converse(ChatSessionModel session, String uuid, String text) throws Exception {
+    public ChatData converse(ParagraphVectors paragraphVectors, ChatSessionModel session, String uuid, String text) throws Exception {
         assert text != null : "Chat text can't be null";
         assert Objects.nonNull(paragraphVectors): "No model has detected\n Please set the model and restart the service";
         final ChatLogModel chaLog = new ChatLogModel();
+        LOG.info(String.format("INSIDE DEFAULT SERVICE ----------------- %s", paragraphVectors));
 
         try {
             //Check if it is sequential discution so add the context of the prévious chat
@@ -181,7 +183,6 @@ public class DefaultChatService implements ChatService {
     private LabelData computeLabelFromUserinput(String text, final ParagraphVectors paragraphVectors, CellMemoryModel cellMemory) {
         //final List<String> inputTokens = new ArrayList<>();
         final StringBuffer inputBuffer = new StringBuffer();
-
         if (Objects.nonNull(cellMemory)) {
             inputBuffer.append(cellMemory.getValue());
             inputBuffer.append(StringUtils.SPACE);

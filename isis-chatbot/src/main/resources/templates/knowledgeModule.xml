@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<context xmlns="http://www.isis.cm/config/isis-item"
+         xmlns:ls="http://www.isis.cm/config/list-view"
+         xmlns:a="http://www.isis.cm/config/isis-actions"
+         xmlns:e="http://www.isis.cm/config/editor-area">
+    <ls:list-view>
+        <ls:list>
+            <ls:column qualifier="code" search="true"/>
+            <ls:column qualifier="label"  search="true"/>
+            <ls:column qualifier="status" search="true" widget="manytoone" />
+            <ls:column qualifier="modelfile" search="true"  />
+            <ls:column qualifier="defaultmodel" search="true"  widget="switch"/>
+            <ls:column qualifier="dateModification" search="false" widget="datetime-local" />
+            <ls:column qualifier="description" search="true" />
+        </ls:list>
+    </ls:list-view>
+    <e:editor-area createOnField="false" searchKey="code">
+        <e:component>
+            <e:common>
+                <e:form>
+                    <e:section columns="2" position="2" name="commons">
+                        <e:field qualifier="code"  updatable="false"/>
+                        <e:field qualifier="label" />
+                        <e:field qualifier="status"  editable="false" updatable="false" widget="manytoone"/>
+                        <e:field qualifier="classes" widget="manytomany"/>
+                        <e:field qualifier="modelfile" updatable="false" editable="false"/>
+                        <e:field qualifier="dateModification" widget="datetime-local"/>
+                        <e:field qualifier="defaultmodel" widget="switch"/>
+                    </e:section>
+                    <e:section position="1" columns="1" name="type.KnowledgeModule.description.name" header="true">
+                        <e:field qualifier="description" widget="textarea"  />
+                    </e:section>
+                </e:form>
+            </e:common>
+        </e:component>
+        <a:actions>
+            <a:action name="type.KnowledgeModule.default.btn" code="knowledgemodule01.action" icon="fa-solid fa-microchip" position="workflow" />
+            <a:action name="type.KnowledgeModule.open.btn" code="knowledgemodule02.action" icon="fa-solid fa-microchip" position="workflow" />
+       </a:actions>
+    </e:editor-area>
+</context>

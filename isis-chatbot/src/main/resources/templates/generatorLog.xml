@@ -8,6 +8,7 @@
         <ls:list>
             <ls:column qualifier="motif"  search="false"/>
             <ls:column qualifier="date"  search="false" widget="datetime-local"/>
+            <ls:column qualifier="domain" search="true" widget="manytoone" />
             <ls:column qualifier="modelname" search="true"  />
         </ls:list>
     </ls:list-view>
@@ -16,10 +17,11 @@
             <e:common>
                 <e:form>
                     <e:section columns="2" position="4" name="commons">
+                        <e:field qualifier="domain" updatable="false" widget="manytoone" />
                         <e:field qualifier="date" editable="false"/>
                         <e:field qualifier="modelname"  editable="false"/>
                     </e:section>
-                    <e:section columns="1" position="4" name="commons">
+                    <e:section columns="1" position="3" name="commons">
                          <e:field qualifier="motif"  widget="textarea"/>
                     </e:section>
                 </e:form>

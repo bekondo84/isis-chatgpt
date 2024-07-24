@@ -10,10 +10,8 @@ import cm.platform.basecommerce.core.chat.ChatLogModel;
 import cm.platform.basecommerce.core.chat.ChatSessionModel;
 import cm.platform.basecommerce.core.security.EmployeeModel;
 import cm.platform.basecommerce.core.security.UserModel;
-import cm.platform.basecommerce.services.FlexibleSearchService;
-import cm.platform.basecommerce.services.I18NService;
-import cm.platform.basecommerce.services.ModelService;
-import cm.platform.basecommerce.services.UserService;
+import cm.platform.basecommerce.core.settings.SettingModel;
+import cm.platform.basecommerce.services.*;
 import cm.platform.basecommerce.services.exceptions.ModelServiceException;
 import cm.platform.basecommerce.tools.persistence.DAOUtilis;
 import cm.platform.basecommerce.tools.persistence.RestrictionsContainer;
@@ -46,6 +44,8 @@ public class DefaultChatSessionFacade implements ChatSessionFacade {
     private UserService userService;
     @Autowired
     private I18NService i18NService;
+    @Autowired
+    private SettingService settingService;
 
 
     @Override
@@ -96,6 +96,9 @@ public class DefaultChatSessionFacade implements ChatSessionFacade {
 
     @Override
     public List<ChatData> initChatSession(Long session, String uuid) throws ModelServiceException {
+        final SettingModel setting = settingService.getSettings();
+        String chatname = Objects.nonNull(setting) ? setting.getChatname() : StringUtils.EMPTY;
+
         RestrictionsContainer container = RestrictionsContainer.newInstance();
 
         if (Objects.nonNull(session)) {
@@ -112,7 +115,8 @@ public class DefaultChatSessionFacade implements ChatSessionFacade {
             chatLog.setUuid(uuid);
             chatLog.setDate(new Date());
             chatLog.setInput(null);
-            chatLog.setOutput(i18NService.getLabel("chatbot.welcome.message","chatbot.welcome.message"));
+            String welcomeText = i18NService.getLabel("chatbot.welcome.message", "chatbot.welcome.message");
+            chatLog.setOutput(String.format(welcomeText, chatname));
             if (Objects.nonNull(session)) {
                 chatLog.setSession((ChatSessionModel) flexibleSearchService.find(session, ChatSessionModel._TYPECODE).orElse(null));
             }

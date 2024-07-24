@@ -2,9 +2,12 @@ package cm.nzock.iterators;
 
 import cm.nzock.services.TokenizerFactoryService;
 import cm.platform.basecommerce.core.knowledge.KnowledgeModel;
+import cm.platform.basecommerce.core.knowledge.KnowledgeModuleModel;
+import cm.platform.basecommerce.core.knowledge.KnowledgeTypeModel;
 import cm.platform.basecommerce.core.knowledge.KnowlegeLabelModel;
 import cm.platform.basecommerce.services.FlexibleSearchService;
 import cm.platform.basecommerce.tools.persistence.RestrictionsContainer;
+import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.deeplearning4j.text.documentiterator.LabelAwareIterator;
 import org.deeplearning4j.text.documentiterator.LabelledDocument;
@@ -20,29 +23,51 @@ import java.util.*;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
 
-@Component
+
 public class SetenceIterator implements LabelAwareIterator {
     private static final Logger LOG = LoggerFactory.getLogger(SetenceIterator.class);
 
-    @Autowired
+    //@Autowired
     private FlexibleSearchService flexibleSearchService;
-    @Autowired
+   // @Autowired
     private TokenizerFactoryService tokenizerFactoryService;
     private AtomicInteger  cursor = new AtomicInteger(0);
     private LabelsSource labelsSource ;
 
+    private KnowledgeModuleModel domain ;
+
+    private SetenceIterator() {
+
+    }
+
+    /**
+     *
+     * @param domain
+     * @param flexibleSearchService
+     * @param tokenizerFactoryService
+     * @return
+     */
+    public static final SetenceIterator instance(final KnowledgeModuleModel domain,
+                                 final FlexibleSearchService flexibleSearchService, final TokenizerFactoryService tokenizerFactoryService) {
+       assert Objects.nonNull(domain) : "Domain is not null" ;
+       assert Objects.nonNull(flexibleSearchService) : "FlexibleSearchService is not initialize";
+       assert Objects.nonNull(tokenizerFactoryService) : "TokenizerFactoryService is not initialize";
+
+       return new SetenceIterator().setCursor(new AtomicInteger(0))
+               .setDomain(domain)
+               .setTokenizerFactoryService(tokenizerFactoryService)
+               .setFlexibleSearchService(flexibleSearchService);
+    }
     @Override
     public boolean hasNextDocument() {
-        RestrictionsContainer container = RestrictionsContainer.newInstance();
-        long totalSize = flexibleSearchService.count(KnowledgeModel.class, container);
+        long totalSize = flexibleSearchService.count(KnowledgeModel.class, buildRestrictionsContainer());
         return cursor.get() < totalSize;
     }
 
     @Override
     public LabelledDocument nextDocument() {
-        RestrictionsContainer container = RestrictionsContainer.newInstance();
         int index = cursor.getAndIncrement();
-        final KnowledgeModel knowledge = (KnowledgeModel) flexibleSearchService.doSearch(KnowledgeModel.class, container, new HashMap<>(), new HashSet<>(), index, index).get(0);
+        final KnowledgeModel knowledge = (KnowledgeModel) flexibleSearchService.doSearch(KnowledgeModel.class, buildRestrictionsContainer(), new HashMap<>(), new HashSet<>(), index, index).get(0);
 
        LOG.info(String.format("nextDocument ------ question : %s", knowledge.getCode()));
 
@@ -51,7 +76,7 @@ public class SetenceIterator implements LabelAwareIterator {
         final List<String> words =new ArrayList<>();
         final StringBuffer stringBuffer = new StringBuffer();
 
-        final TokenizerFactory tokenizerFactory = tokenizerFactoryService.tokenizerFactory();
+        //final TokenizerFactory tokenizerFactory = tokenizerFactoryService.tokenizerFactory();
 
         if (StringUtils.isNoneBlank(knowledge.getTemplate())) {
             //words.addAll(tokenizerFactory.create(knowledge.getTemplate()).getTokens());
@@ -77,15 +102,27 @@ public class SetenceIterator implements LabelAwareIterator {
     @Override
     public LabelsSource getLabelsSource() {
         if (Objects.isNull(labelsSource)) {
-            RestrictionsContainer container = RestrictionsContainer.newInstance();
-            final List<String> labels = (List<String>) flexibleSearchService.doSearch(KnowlegeLabelModel.class, container, new HashMap<>(), new HashSet<>(), 0, -1)
+            final List<String> labels = (List<String>) flexibleSearchService.doSearch(KnowledgeModel.class, buildRestrictionsContainer(), new HashMap<>(), new HashSet<>(), 0, -1)
                     .stream()
-                    .map(item -> ((KnowlegeLabelModel)item).getCode())
+                    .map(val -> ((KnowledgeModel)val).getLabel().getCode())
+                    .distinct()
                     .collect(Collectors.toList());
             labelsSource = new LabelsSource(labels) ;
         }
         return labelsSource;
     }
+
+
+    private RestrictionsContainer buildRestrictionsContainer() {
+        //Get the list of KnowledgeType
+        List<String> types = CollectionUtils.emptyIfNull(domain.getClasses())
+                .stream().map(KnowledgeTypeModel::getCode)
+                .collect(Collectors.toList());
+        RestrictionsContainer container = RestrictionsContainer.newInstance();
+        container.addIn("category.code", types.toArray(new String[types.size()]));
+        return container;
+    }
+
 
     @Override
     public void shutdown() {
@@ -100,5 +137,25 @@ public class SetenceIterator implements LabelAwareIterator {
     @Override
     public LabelledDocument next() {
         return nextDocument();
+    }
+
+    public SetenceIterator setFlexibleSearchService(FlexibleSearchService flexibleSearchService) {
+        this.flexibleSearchService = flexibleSearchService;
+        return this;
+    }
+
+    public SetenceIterator setTokenizerFactoryService(TokenizerFactoryService tokenizerFactoryService) {
+        this.tokenizerFactoryService = tokenizerFactoryService;
+        return this;
+    }
+
+    public SetenceIterator setCursor(AtomicInteger cursor) {
+        this.cursor = cursor;
+        return this;
+    }
+
+    public SetenceIterator setDomain(KnowledgeModuleModel domain) {
+        this.domain = domain;
+        return this;
     }
 }

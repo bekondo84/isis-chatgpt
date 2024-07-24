@@ -5,6 +5,7 @@
          action="evaluationAction">
     <ls:list-view>
         <ls:list>
+            <ls:column qualifier="domain"  search="true" show="true"/>
             <ls:column qualifier="filename"  search="true" show="true"/>
             <ls:column qualifier="description"  search="true" show="true"/>
             <ls:column qualifier="learningrate" show="true"/>
@@ -19,6 +20,7 @@
             <e:common>
                 <e:form>
                     <e:section columns="2" position="4" name="commons">
+                        <e:field qualifier="domain" widget="manytoone" updatable="false"/>
                         <e:field qualifier="filename" widget="file" updatable="false"/>
                         <e:field qualifier="description"/>
                     </e:section>

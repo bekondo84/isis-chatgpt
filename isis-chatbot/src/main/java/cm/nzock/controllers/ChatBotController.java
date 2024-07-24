@@ -27,9 +27,9 @@ public class ChatBotController {
 
 
     @PostMapping
-    public ResponseEntity<ChatData> tchat(@RequestParam("uuid") String uuid, @RequestParam(value = "session", required = false)Long session , @RequestParam("text") String text) {
-        LOG.info(String.format("Inside Chat API ------------------- %s", text));
-        return ResponseEntity.ok(chatFacade.converse(session, uuid, text)) ;
+    public ResponseEntity<ChatData> tchat(@RequestParam("uuid") String uuid, @RequestParam(value = "session", required = false)Long session, @RequestParam("domain")Long domain , @RequestParam("text") String text) {
+        //LOG.info(String.format("Inside Chat API ------------------- %s", text));
+        return ResponseEntity.ok(chatFacade.converse(session, uuid, domain, text)) ;
     }
 
     @GetMapping("/settings")

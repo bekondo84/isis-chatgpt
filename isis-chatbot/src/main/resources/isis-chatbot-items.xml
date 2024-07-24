@@ -22,6 +22,10 @@
             <value code="UNCERTAIN"/>
             <value code="UNKNOWN"/>
         </enumtype>
+        <enumtype code="KnowledgeModStatus" persist="true">
+            <value code="OPEN"/>
+            <value code="CLOSE"/>
+        </enumtype>
     </enumtypes>
     <relations>
         <relation code="evaluation_relation">
@@ -48,6 +52,15 @@
                 <modifiers />
             </source>
             <target qualifier="acls" type="UserAccessLevel" collectiontype="list" cardinality="many" navigable="false">
+                <modifiers/>
+            </target>
+        </relation>
+        <relation code="module_type">
+            <deployment typecode="00117" table="r_knownmoduletype"/>
+            <source qualifier="modules" type="KnowledgeModule" cardinality="many" collectiontype="list">
+                <modifiers/>
+            </source>
+            <target qualifier="classes" type="KnowledgeType" collectiontype="list" cardinality="many" navigable="false">
                 <modifiers/>
             </target>
         </relation>
@@ -83,6 +96,36 @@
             </itemtype>
         </itemgroup>
         <itemgroup name="Knowledge management">
+            <itemtype code="KnowledgeModule" package="cm.platform.basecommerce.core.knowledge" searchKey="code" persist="true" generate="true">
+                <deployment typecode="00118" table="t_knowledgemodule"/>
+                <attributes>
+                    <attribute qualifier="code" type="java.lang.String">
+                        <persistence type="persistent"/>
+                        <modifiers unique="true" optional="false" />
+                    </attribute>
+                    <attribute qualifier="label" type="java.lang.String">
+                        <persistence type="persistent"/>
+                        <modifiers optional="false" />
+                    </attribute>
+                    <attribute qualifier="modelfile" type="java.lang.String">
+                        <persistence type="persistent"/>
+                        <modifiers />
+                    </attribute>
+                    <attribute qualifier="status" type="KnowledgeModStatus">
+                        <persistence type="persistent"/>
+                        <modifiers />
+                    </attribute>
+                    <attribute qualifier="description" type="ISIS_BIG_STRING">
+                        <persistence type="persistent"/>
+                        <modifiers />
+                    </attribute>
+                    <attribute qualifier="defaultmodel" type="java.lang.Boolean">
+                        <persistence type="persistent"/>
+                        <modifiers initial="true"/>
+                        <defaultvalue>java.lang.Boolean.valueOf("FALSE")</defaultvalue>
+                    </attribute>
+                </attributes>
+            </itemtype>
             <itemtype code="KnowledgeType" package="cm.platform.basecommerce.core.knowledge" generate="true" persist="true" searchKey="code">
                 <deployment typecode="00101" table="t_knowledgetype"/>
                 <attributes>
@@ -221,6 +264,10 @@
                         <persistence type="persistent" />
                         <modifiers unique="true"/>
                     </attribute>
+                    <attribute qualifier="domain" type="KnowledgeModule">
+                        <persistence type="persistent" />
+                        <modifiers optional="false"/>
+                    </attribute>
                 </attributes>
             </itemtype>
             <itemtype code="SolrIgnoreWords" package="cm.platform.basecommerce.core.solr" persist="true" generate="true">
@@ -295,6 +342,10 @@
                         <persistence type="persistent"/>
                         <modifiers initial="true"/>
                         <defaultvalue>java.lang.Integer.valueOf("10")</defaultvalue>
+                    </attribute>
+                    <attribute qualifier="domain" type="KnowledgeModule">
+                        <persistence type="persistent" />
+                        <modifiers optional="false"/>
                     </attribute>
                 </attributes>
             </itemtype>

@@ -1,6 +1,7 @@
 package cm.nzock.controllers;
 
 import cm.nzock.beans.ChatData;
+import cm.nzock.beans.DomainData;
 import cm.nzock.facades.ChatFacade;
 import cm.nzock.facades.ChatSessionFacade;
 import cm.platform.basecommerce.core.utils.IsisConstants;
@@ -25,10 +26,15 @@ public class OpenChatBotController {
     private ChatSessionFacade sessionFacade ;
 
 
+    @GetMapping("/domain")
+    public ResponseEntity<DomainData> defaultDomain() {
+        return ResponseEntity.ok(chatFacade.defaultDomain());
+    }
+
     @PostMapping
-    public ResponseEntity<ChatData> tchat(@RequestParam("uuid")String uuid, @RequestParam("text") String text) {
+    public ResponseEntity<ChatData> tchat(@RequestParam("uuid")String uuid, @RequestParam("domain")Long domain, @RequestParam("text") String text) {
         //LOG.info(String.format("Inside OPEn Chat API ------------------- %s", text));
-        return ResponseEntity.ok(chatFacade.converse(null, uuid, text)) ;
+        return ResponseEntity.ok(chatFacade.converse(null, uuid, domain, text)) ;
     }
 
     @GetMapping("/uuid")

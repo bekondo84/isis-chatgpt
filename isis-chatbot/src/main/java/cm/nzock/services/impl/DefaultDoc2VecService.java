@@ -1,10 +1,12 @@
 package cm.nzock.services.impl;
 
+import cm.nzock.iterators.SentenceIteratorBuilder;
 import cm.nzock.iterators.SetenceIterator;
 import cm.nzock.services.Doc2VecService;
 import cm.nzock.services.TokenizerFactoryService;
 import cm.platform.basecommerce.core.exception.NzockException;
 import cm.platform.basecommerce.core.knowledge.EvaluationModel;
+import cm.platform.basecommerce.core.knowledge.KnowledgeModuleModel;
 import cm.platform.basecommerce.core.settings.SettingModel;
 import cm.platform.basecommerce.core.utils.FilesHelper;
 import cm.platform.basecommerce.services.ModelService;
@@ -40,7 +42,7 @@ public class DefaultDoc2VecService implements Doc2VecService {
     @Autowired
     private SettingService settingService ;
     @Autowired
-    private SetenceIterator iterator;
+    private SentenceIteratorBuilder iteratorBuilder;
     @Autowired
     private ModelService modelService;
     @Autowired
@@ -48,7 +50,7 @@ public class DefaultDoc2VecService implements Doc2VecService {
 
 
     @Override
-    public String buildAndSaveModel() throws ModelServiceException, IOException {
+    public String buildAndSaveModel(final KnowledgeModuleModel domain) throws ModelServiceException, IOException {
         final SettingModel setting = settingService.getSettings();
 
         if (Objects.isNull(setting)) {
@@ -58,12 +60,13 @@ public class DefaultDoc2VecService implements Doc2VecService {
         double minLearningRate = Objects.nonNull(setting) ? setting.getMinlearningrate() : 0.08;
         int batchSize = Objects.nonNull(setting) ? setting.getBatchsize() : 50;
         int numEpochs = Objects.nonNull(setting) ? setting.getEpochs() : 10;
-        final ParagraphVectors paragraphVectors = getParagraphVectors(learningRate, minLearningRate, batchSize, numEpochs);
+        final ParagraphVectors paragraphVectors = getParagraphVectors(domain, learningRate, minLearningRate, batchSize, numEpochs);
 
-        final File modelSaveDirectory = new File(StringUtils.joinWith(File.separator, FilesHelper.getDataDir().getPath(), "model", "isis-".concat(SDF.format(new Date())).concat(".zip")));
+        final File modelSaveDirectory = new File(StringUtils.joinWith(File.separator, FilesHelper.getDataDir().getPath(), "model", domain.getCode().toLowerCase().trim().concat(SDF.format(new Date())).concat(".zip")));
+        //Model currentFile if exist to archive
+        final File currentFile = new File(StringUtils.joinWith(File.separator, FilesHelper.getDataDir().getPath(), "model", domain.getModelfile()));
 
-        if (Objects.nonNull(setting) && StringUtils.isNoneBlank(setting.getActivemodel())) {
-            final File currentFile = new File(StringUtils.joinWith(File.separator, FilesHelper.getDataDir().getPath(), "model", setting.getActivemodel()));
+        if (currentFile.exists() && currentFile.isFile()) {
             final File archiveFile = new File(StringUtils.joinWith(File.separator, FilesHelper.getDataDir().getPath(), "model", "archives", currentFile.getName()));
             FileUtils.moveFile(currentFile, archiveFile);
         }
@@ -71,22 +74,22 @@ public class DefaultDoc2VecService implements Doc2VecService {
         WordVectorSerializer.writeParagraphVectors(paragraphVectors, modelSaveDirectory);
 
         //Update Setting
-        setting.setActivemodel(modelSaveDirectory.getName());
-        modelService.save(setting);
+        domain.setModelfile(modelSaveDirectory.getName());
+        modelService.save(domain);
 
         return modelSaveDirectory.getName();
     }
 
 
     @Override
-    public ParagraphVectors buildParagraphVectorsFromModel()  {
+    public ParagraphVectors buildParagraphVectorsFromModel(final KnowledgeModuleModel domain)  {
 
         ParagraphVectors paragraphVectors = null;
 
         try {
-            final SettingModel setting = settingService.getSettings();
-            if (Objects.nonNull(setting) && StringUtils.isNoneBlank(setting.getActivemodel())) {
-                final File activeModelFile = new File(StringUtils.joinWith(File.separator, FilesHelper.getDataDir().getPath(), "model", setting.getActivemodel()));
+            //final SettingModel setting = settingService.getSettings();
+            if (Objects.nonNull(domain) && StringUtils.isNoneBlank(domain.getModelfile())) {
+                final File activeModelFile = new File(StringUtils.joinWith(File.separator, FilesHelper.getDataDir().getPath(), "model", domain.getModelfile()));
 
                 paragraphVectors = activeModelFile.exists() ? WordVectorSerializer.readParagraphVectors(activeModelFile) : null;
 
@@ -94,7 +97,7 @@ public class DefaultDoc2VecService implements Doc2VecService {
                     paragraphVectors.setTokenizerFactory(tokenizerFactoryService.tokenizerFactory());
                     //paragraphVectors.fit();
                 }
-            } else if (Objects.isNull(setting)) {
+            } else if (Objects.isNull(domain)) {
                 throw new NzockException(String.format(CONFIGURATION_ERROR));
             } else {
                 throw new NzockException("No model is configure\n Please generate new model and try again");
@@ -108,10 +111,12 @@ public class DefaultDoc2VecService implements Doc2VecService {
     @Override
     public ParagraphVectors buildParagraphVectors(EvaluationModel evaluation) throws IOException {
         assert Objects.nonNull(evaluation):"Evaluation object is null";
-        return getParagraphVectors(evaluation.getLearningrate(), evaluation.getMinlearningrate(), evaluation.getBatchsize(), evaluation.getEpochs());
+        return getParagraphVectors(evaluation.getDomain(), evaluation.getLearningrate(), evaluation.getMinlearningrate(), evaluation.getBatchsize(), evaluation.getEpochs());
     }
 
-    private ParagraphVectors getParagraphVectors(double learningRate, double minLearningRate, int batchSize, int numEpochs) {
+    private ParagraphVectors getParagraphVectors(final KnowledgeModuleModel domain,double learningRate, double minLearningRate, int batchSize, int numEpochs) {
+        final SetenceIterator iterator = iteratorBuilder.build(domain);
+
         final ParagraphVectors paragraphVectors =new ParagraphVectors.Builder()
                 //.minWordFrequency(1)
                 .learningRate(learningRate)

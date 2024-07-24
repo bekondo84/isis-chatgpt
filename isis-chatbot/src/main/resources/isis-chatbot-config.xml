@@ -3,13 +3,14 @@
         xmlns:e="http://www.isis.cm/config/explorer-tree">
     <e:explorer-tree>
        <e:navigation-node id="isischatbot.kbs" position="97" icon="fa-solid fa-brain">
-           <e:navigation-node id="isischatbot.kbs.kwnonledgetype" code="KnowledgeType" position="94" icon="fa-solid fa-layer-group" viewMode="list,view" />
-           <e:navigation-node id="isischatbot.kbs.kwnonledgelabel" code="KnowlegeLabel" position="95" icon="fa-solid fa-registered" viewMode="list,view" />
-           <e:navigation-node id="isischatbot.kbs.kwnonledge" code="Knowledge" position="96" icon="fa-solid fa-brain" viewMode="list,view" />
-           <e:navigation-node id="isischatbot.kbs.importLog" code="ImportLog" position="97" icon="fa-solid fa-arrow-up-from-bracket" viewMode="list,view" />
-           <e:navigation-node id="isischatbot.kbs.generatorLog" code="GeneratorLog" position="98" icon="fa-solid fa-inbox" viewMode="list,view" />
-           <e:navigation-node id="isischatbot.kbs.evaluation" code="Evaluation" position="99" icon="fa-solid fa-inbox" viewMode="list,view" />
-           <e:navigation-node id="isischatbot.kbs.solrIgnoreWords" code="SolrIgnoreWords" position="100" icon="fa-solid fa-inbox" viewMode="list,view" />
+           <e:navigation-node id="isischatbot.kbs.kwnonledgetype" code="KnowledgeType" position="90" icon="fa-solid fa-layer-group" viewMode="list,view" />
+           <e:navigation-node id="isischatbot.kbs.kwnonledgelabel" code="KnowlegeLabel" position="91" icon="fa-solid fa-registered" viewMode="list,view" />
+           <e:navigation-node id="isischatbot.kbs.kwnonledge" code="Knowledge" position="92" icon="fa-solid fa-brain" viewMode="list,view" />
+           <e:navigation-node id="isischatbot.kbs.kwnonledgemodule" code="KnowledgeModule" position="93" icon="fa-solid fa-brain" viewMode="list,view" />
+           <e:navigation-node id="isischatbot.kbs.importLog" code="ImportLog" position="94" icon="fa-solid fa-arrow-up-from-bracket" viewMode="list,view" />
+           <e:navigation-node id="isischatbot.kbs.generatorLog" code="GeneratorLog" position="95" icon="fa-solid fa-inbox" viewMode="list,view" />
+           <e:navigation-node id="isischatbot.kbs.evaluation" code="Evaluation" position="96" icon="fa-solid fa-inbox" viewMode="list,view" />
+           <e:navigation-node id="isischatbot.kbs.solrIgnoreWords" code="SolrIgnoreWords" position="97" icon="fa-solid fa-inbox" viewMode="list,view" />
        </e:navigation-node>
         <e:navigation-node id="isischat.chat" position="98" icon="fa-solid fa-comments-dollar">
             <e:navigation-node id="isischatbot.chat.chatSession" code="ChatSession" position="99" icon="fa-solid fa-object-group" viewMode="list,view" />

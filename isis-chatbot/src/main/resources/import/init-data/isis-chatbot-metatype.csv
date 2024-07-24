@@ -1,6 +1,7 @@
 INSERT_UPDATE MetaType;code[unique=true];codeType;typeName;parent;generate;persist;abstractClass;description
 ;UserAccessLevel;00100;cm.platform.basecommerce.core.security.UserAccessLevelModel;  ;true;true;false;  
 ;Employee;000029;cm.platform.basecommerce.core.security.EmployeeModel;User;true;true;false;Users account
+;KnowledgeModule;00118;cm.platform.basecommerce.core.knowledge.KnowledgeModuleModel;  ;true;true;false;  
 ;KnowledgeType;00101;cm.platform.basecommerce.core.knowledge.KnowledgeTypeModel;  ;true;true;false;  
 ;AbstractKnowledge;00102;cm.platform.basecommerce.core.knowledge.AbstractKnowledgeModel;  ;true;true;true;  
 ;Knowledge;00103;cm.platform.basecommerce.core.knowledge.KnowledgeModel;AbstractKnowledge;true;true;false;  
@@ -20,17 +21,21 @@ INSERT_UPDATE MetaType;code[unique=true];codeType;typeName;parent;generate;persi
 ;ImportLogType;importlogtype;cm.platform.basecommerce.core.enums.ImportLogType;EnumerateValue;true;true;false;  
 ;ImportLogState;importlogstate;cm.platform.basecommerce.core.enums.ImportLogState;EnumerateValue;true;true;false;  
 ;ChatLogState;chatlogstate;cm.platform.basecommerce.core.enums.ChatLogState;EnumerateValue;true;true;false;  
+;KnowledgeModStatus;knowledgemodstatus;cm.platform.basecommerce.core.enums.KnowledgeModStatus;EnumerateValue;true;true;false;  
 ;EnumerateValue;enumeratevalue;cm.platform.basecommerce.core.EnumerateValue;EnumerateValue;true;false;false;Enum base class
+INSERT_UPDATE ChatLogState;code
+;KNOWN
+;UNCERTAIN
+;UNKNOWN
+INSERT_UPDATE KnowledgeModStatus;code
+;OPEN
+;CLOSE
 INSERT_UPDATE ScriptType;code
 ;GROOVY
 ;JavaScript
 INSERT_UPDATE ImportLogType;code
 ;APPEND
 ;RESET
-INSERT_UPDATE ChatLogState;code
-;KNOWN
-;UNCERTAIN
-;UNKNOWN
 INSERT_UPDATE ImportLogState;code
 ;LOAD
 ;IMPORT

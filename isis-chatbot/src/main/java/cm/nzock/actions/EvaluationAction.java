@@ -15,6 +15,7 @@ import cm.platform.basecommerce.tools.persistence.RestrictionsContainer;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.io.FileUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.deeplearning4j.models.paragraphvectors.ParagraphVectors;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -81,6 +82,11 @@ public class EvaluationAction extends AbstractAction {
         final List<EvalutionEntryModel> evaluations = new ArrayList<>();
 
         for (List<String> line: extractOnlyData(values)) {
+
+            if (StringUtils.isBlank(line.get(0))) {
+                continue;
+            }
+
             final EvalutionEntryModel entry = new EvalutionEntryModel();
             entry.setText(line.get(0));
             try {

@@ -5,6 +5,7 @@ import cm.nzock.services.Doc2VecService;
 import cm.platform.basecommerce.core.actions.AbstractAction;
 import cm.platform.basecommerce.core.actions.annotations.ActionService;
 import cm.platform.basecommerce.core.knowledge.GeneratorLogModel;
+import cm.platform.basecommerce.core.knowledge.KnowledgeModuleModel;
 import cm.platform.basecommerce.services.FlexibleSearchService;
 import cm.platform.basecommerce.services.MetaTypeService;
 import cm.platform.basecommerce.services.ModelService;
@@ -46,16 +47,19 @@ public class GeneratorLogAction extends AbstractAction {
         //Build the paragraph doc2vec model
         final String modelfilename;
         try {
-            modelfilename = doc2VecService.buildAndSaveModel();
+            modelfilename = doc2VecService.buildAndSaveModel(item.getDomain());
             //Update and save
             item.setModelname(modelfilename);
             item.setDate(new Date());
             item.setDateCreation(new Date());
             getModelService().save(item);
+            //Process KnowledgeModule object
+            final KnowledgeModuleModel domain = item.getDomain();
+            domain.setModelfile(modelfilename);
+            domain.setDateModification(new Date());
+            getModelService().save(domain);
             item = (GeneratorLogModel) getModelService().find(item);
             context.put(DATA, getModelService().findAndConvertToJson(item));
-            //Reload model
-            //chatService.reloadModel();
         } catch (Exception e) {
             LOG.error("There is error during model generation", e);
         }
