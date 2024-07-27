@@ -23,6 +23,16 @@ INSERT_UPDATE MetaType;code[unique=true];codeType;typeName;parent;generate;persi
 ;ChatLogState;chatlogstate;cm.platform.basecommerce.core.enums.ChatLogState;EnumerateValue;true;true;false;  
 ;KnowledgeModStatus;knowledgemodstatus;cm.platform.basecommerce.core.enums.KnowledgeModStatus;EnumerateValue;true;true;false;  
 ;EnumerateValue;enumeratevalue;cm.platform.basecommerce.core.EnumerateValue;EnumerateValue;true;false;false;Enum base class
+INSERT_UPDATE ImportLogState;code
+;LOAD
+;IMPORT
+;ERROR
+INSERT_UPDATE ScriptType;code
+;GROOVY
+;JavaScript
+INSERT_UPDATE ImportLogType;code
+;APPEND
+;RESET
 INSERT_UPDATE ChatLogState;code
 ;KNOWN
 ;UNCERTAIN
@@ -30,15 +40,5 @@ INSERT_UPDATE ChatLogState;code
 INSERT_UPDATE KnowledgeModStatus;code
 ;OPEN
 ;CLOSE
-INSERT_UPDATE ScriptType;code
-;GROOVY
-;JavaScript
-INSERT_UPDATE ImportLogType;code
-;APPEND
-;RESET
-INSERT_UPDATE ImportLogState;code
-;LOAD
-;IMPORT
-;ERROR
 
 

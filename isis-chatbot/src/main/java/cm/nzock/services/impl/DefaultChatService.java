@@ -67,7 +67,7 @@ public class DefaultChatService implements ChatService {
 
 
     @Override
-    public ChatData converse(ParagraphVectors paragraphVectors, ChatSessionModel session, String uuid, String text) throws Exception {
+    public ChatData converse(ParagraphVectors paragraphVectors, KnowledgeModuleModel domain, ChatSessionModel session, String uuid, String text) throws Exception {
         assert text != null : "Chat text can't be null";
         assert Objects.nonNull(paragraphVectors): "No model has detected\n Please set the model and restart the service";
         final ChatLogModel chaLog = new ChatLogModel();
@@ -78,7 +78,7 @@ public class DefaultChatService implements ChatService {
             //The purpose of cellMemory is to store previous conversation
             CellMemoryModel cellMemory = cellMemoryService.read(uuid);
 
-            LabelData result = computeLabelFromUserinput(text, paragraphVectors, cellMemory);
+            LabelData result = computeLabelFromUserinput(text, paragraphVectors, cellMemory, domain);
             chaLog.setCosim(result.cosim);
 
             if (result.cosim >= result.acceptanceRate) {
@@ -144,7 +144,7 @@ public class DefaultChatService implements ChatService {
         }
         final ChatLogModel dbChatLog = (ChatLogModel) flexibleSearchService.doSearch(ChatLogModel.class, container, new HashMap<>(), new HashSet<>(), 0, -1).stream()
                 .findAny().get();
-        return new ChatData(dbChatLog.getPK(), chaLog.getInput(), chaLog.getOutput(), false);
+        return new ChatData(dbChatLog.getPK(), chaLog.getInput(), chaLog.getOutput(), false, chaLog.getReview());
     }
 
     /**
@@ -175,12 +175,12 @@ public class DefaultChatService implements ChatService {
     }
 
     @Override
-    public ChatData converse(ParagraphVectors paragraphVectors, String text) throws Exception {
-        LabelData label = computeLabelFromUserinput(text, paragraphVectors, null);
-        return new ChatData(null, text, label.label, label.cosim, false);
+    public ChatData converse(ParagraphVectors paragraphVectors, KnowledgeModuleModel domain, String text) throws Exception {
+        LabelData label = computeLabelFromUserinput(text, paragraphVectors, null, domain);
+        return new ChatData(null, text, label.label, label.cosim, false, true);
     }
 
-    private LabelData computeLabelFromUserinput(String text, final ParagraphVectors paragraphVectors, CellMemoryModel cellMemory) {
+    private LabelData computeLabelFromUserinput(String text, final ParagraphVectors paragraphVectors, CellMemoryModel cellMemory, KnowledgeModuleModel domain) {
         //final List<String> inputTokens = new ArrayList<>();
         final StringBuffer inputBuffer = new StringBuffer();
         if (Objects.nonNull(cellMemory)) {
@@ -201,8 +201,8 @@ public class DefaultChatService implements ChatService {
         LOG.info(String.format("---cleanText: %s   - cosim :%s", inputBuffer.toString(), cosim));
         //Build the ansew base on the value of the cosim
         final SettingModel setting = settingService.getSettings();
-        final double acceptanceRate = (Objects.nonNull(setting) ? setting.getAcceptancerate() : 70d)/100;
-        final double uncertaintyrate = (Objects.nonNull(setting) ? setting.getUncertaintyrate() : 30d)/100;
+        final double acceptanceRate = domain.getAcceptancerate()/100;
+        final double uncertaintyrate = domain.getUncertaintyrate()/100;
         LabelData result = new LabelData(label, cosim, acceptanceRate, uncertaintyrate);
         return result;
     }

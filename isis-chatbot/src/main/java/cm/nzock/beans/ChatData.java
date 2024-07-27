@@ -10,19 +10,21 @@ public class ChatData implements Serializable {
     private double cosim;
     private boolean review = true;
 
-    public ChatData(Long pk, String input, String value, boolean initial) {
+    public ChatData(Long pk, String input, String value, boolean initial, boolean review) {
         this.pk = pk;
         this.input = input;
         this.value = value;
         this.initial = initial;
+        this.review = review;
     }
 
-    public ChatData(Long pk, String input, String value, double cosim, boolean initial) {
+    public ChatData(Long pk, String input, String value, double cosim, boolean initial, boolean review) {
         this.pk = pk;
         this.input = input;
         this.value = value;
         this.initial = initial;
         this.cosim = cosim;
+        this.review = review;
     }
 
     public ChatData() {

@@ -104,7 +104,7 @@ public class DefaultChatFacade implements ChatFacade {
                 knowledgeDomain = (KnowledgeModuleModel) flexibleSearchService.find(domain, KnowledgeModuleModel._TYPECODE).get();
 
             }
-            return chatService.converse( paragraphVector.paragraphVectors(knowledgeDomain), chatSession,uuid, text);
+            return chatService.converse( paragraphVector.paragraphVectors(knowledgeDomain), knowledgeDomain, chatSession,uuid, text);
         } catch (Exception e) {
             LOG.error("There is error during processing", e);
             throw new  NzockException(e);

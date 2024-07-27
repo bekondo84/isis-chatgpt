@@ -12,8 +12,8 @@ public interface ChatService {
      * @param text
      * @return
      */
-    ChatData converse(final ParagraphVectors paragraphVectors, final ChatSessionModel session, final String uuid, final String text) throws Exception;
+    ChatData converse(final ParagraphVectors paragraphVectors, final KnowledgeModuleModel domain, final ChatSessionModel session, final String uuid, final String text) throws Exception;
 
-    ChatData converse(final ParagraphVectors paragraphVectors, final String text) throws Exception;
+    ChatData converse(final ParagraphVectors paragraphVectors, final KnowledgeModuleModel domain, final String text) throws Exception;
 
 }

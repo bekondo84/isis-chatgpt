@@ -56,10 +56,10 @@ public class DefaultDoc2VecService implements Doc2VecService {
         if (Objects.isNull(setting)) {
             throw new NzockException(String.format(CONFIGURATION_ERROR));
         }
-        double learningRate = Objects.nonNull(setting) ? setting.getLearningrate() : 0.2d;
-        double minLearningRate = Objects.nonNull(setting) ? setting.getMinlearningrate() : 0.08;
-        int batchSize = Objects.nonNull(setting) ? setting.getBatchsize() : 50;
-        int numEpochs = Objects.nonNull(setting) ? setting.getEpochs() : 10;
+        double learningRate = domain.getLearningrate();
+        double minLearningRate = domain.getMinlearningrate();
+        int batchSize = domain.getBatchsize();
+        int numEpochs = domain.getEpochs();
         final ParagraphVectors paragraphVectors = getParagraphVectors(domain, learningRate, minLearningRate, batchSize, numEpochs);
 
         final File modelSaveDirectory = new File(StringUtils.joinWith(File.separator, FilesHelper.getDataDir().getPath(), "model", domain.getCode().toLowerCase().trim().concat(SDF.format(new Date())).concat(".zip")));

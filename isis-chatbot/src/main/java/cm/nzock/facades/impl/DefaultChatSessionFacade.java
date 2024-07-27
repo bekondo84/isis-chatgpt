@@ -127,7 +127,7 @@ public class DefaultChatSessionFacade implements ChatSessionFacade {
                    .ifPresent(obj -> chats.add((ChatLogModel) obj));
         }
         return chats.stream()
-                .map(cht -> new ChatData(cht.getPK(), cht.getInput(), cht.getOutput(), cht.getInitial()))
+                .map(cht -> new ChatData(cht.getPK(), cht.getInput(), cht.getOutput(), cht.getInitial(), cht.getReview()))
                 .sorted(new Comparator<ChatData>() {
                     @Override
                     public int compare(ChatData o1, ChatData o2) {

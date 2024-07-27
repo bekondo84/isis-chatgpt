@@ -84,7 +84,7 @@ public class SetenceIterator implements LabelAwareIterator {
         }
         if (StringUtils.isNoneBlank(knowledge.getKeywords())) {
             //words.addAll(Arrays.stream(knowledge.getKeywords().split(";")).collect(Collectors.toList()));
-            stringBuffer.append(knowledge.getKeywords().replace(";", StringUtils.SPACE).toLowerCase());
+           // stringBuffer.append(knowledge.getKeywords().replace(";", StringUtils.SPACE).toLowerCase());
         }
         //StringUtils.joinWith(StringUtils.SPACE, tokenizerFactory.create(stringBuffer.toString()).getTokens())
         document.setContent(StringCleaning.stripPunct(stringBuffer.toString()));

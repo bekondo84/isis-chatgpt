@@ -37,11 +37,11 @@ public class ChatBotPreprocessor implements TokenPreProcess {
         for (String word : words) {
             final Optional<Dictionnary> ignoreWord = repository.findById(word);
             if (ignoreWord.isPresent()) {
-                LOG.info(String.format("-------------------Cleaning word  %s on text : %s", ignoreWord.get().getValue(), value));
+                //LOG.info(String.format("-------------------Cleaning word  %s on text : %s", ignoreWord.get().getValue(), value));
                 value = StringUtils.replace(value, ignoreWord.get().getValue(), StringUtils.EMPTY);
             }
         }
-        //LOG.info(String.format("Rceive text : %s-------------------Clean text : %s", token, value));
+        LOG.info(String.format("Receive text : %s-------------------Clean text : %s", token, value));
         return value;
     }
 

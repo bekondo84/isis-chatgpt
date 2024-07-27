@@ -90,7 +90,7 @@ public class EvaluationAction extends AbstractAction {
             final EvalutionEntryModel entry = new EvalutionEntryModel();
             entry.setText(line.get(0));
             try {
-                final ChatData chat = chatService.converse(paragraphVectors, line.get(0));
+                final ChatData chat = chatService.converse(paragraphVectors, evaluation.getDomain(), line.get(0));
                 entry.setValue(chat.getValue());
                 entry.setCosim(chat.getCosim());
             } catch (Exception e) {

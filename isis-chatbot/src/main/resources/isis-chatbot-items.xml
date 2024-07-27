@@ -124,6 +124,36 @@
                         <modifiers initial="true"/>
                         <defaultvalue>java.lang.Boolean.valueOf("FALSE")</defaultvalue>
                     </attribute>
+                    <attribute qualifier="learningrate" type="java.lang.Double">
+                        <persistence type="persistent"/>
+                        <modifiers initial="true" optional="false"/>
+                        <defaultvalue>java.lang.Double.valueOf("0.20")</defaultvalue>
+                    </attribute>
+                    <attribute qualifier="minlearningrate" type="java.lang.Double">
+                        <persistence type="persistent"/>
+                        <modifiers initial="true" optional="false"/>
+                        <defaultvalue>java.lang.Double.valueOf("0.08")</defaultvalue>
+                    </attribute>
+                    <attribute qualifier="batchsize" type="java.lang.Integer">
+                        <persistence type="persistent"/>
+                        <modifiers initial="true" optional="false"/>
+                        <defaultvalue>java.lang.Integer.valueOf("50")</defaultvalue>
+                    </attribute>
+                    <attribute qualifier="epochs" type="java.lang.Integer">
+                        <persistence type="persistent"/>
+                        <modifiers initial="true" optional="false"/>
+                        <defaultvalue>java.lang.Integer.valueOf("10")</defaultvalue>
+                    </attribute>
+                    <attribute qualifier="acceptancerate" type="java.lang.Double">
+                        <persistence type="persistent"/>
+                        <modifiers initial="true" optional="false"/>
+                        <defaultvalue>java.lang.Double.valueOf("90")</defaultvalue>
+                    </attribute>
+                    <attribute qualifier="uncertaintyrate" type="java.lang.Double">
+                        <persistence type="persistent"/>
+                        <modifiers initial="true" optional="false"/>
+                        <defaultvalue>java.lang.Double.valueOf("30")</defaultvalue>
+                    </attribute>
                 </attributes>
             </itemtype>
             <itemtype code="KnowledgeType" package="cm.platform.basecommerce.core.knowledge" generate="true" persist="true" searchKey="code">
@@ -456,39 +486,9 @@
             <itemtype code="Setting" package="cm.platform.basecommerce.core.settings" generate="true" persist="true">
                 <deployment typecode="000059" table="setting"/>
                 <attributes>
-                    <attribute qualifier="learningrate" type="java.lang.Double">
-                        <persistence type="persistent"/>
-                        <modifiers initial="true"/>
-                        <defaultvalue>java.lang.Double.valueOf("0.20")</defaultvalue>
-                    </attribute>
-                    <attribute qualifier="minlearningrate" type="java.lang.Double">
-                        <persistence type="persistent"/>
-                        <modifiers initial="true"/>
-                        <defaultvalue>java.lang.Double.valueOf("0.08")</defaultvalue>
-                    </attribute>
-                    <attribute qualifier="batchsize" type="java.lang.Integer">
-                        <persistence type="persistent"/>
-                        <modifiers initial="true"/>
-                        <defaultvalue>java.lang.Integer.valueOf("50")</defaultvalue>
-                    </attribute>
-                    <attribute qualifier="epochs" type="java.lang.Integer">
-                        <persistence type="persistent"/>
-                        <modifiers initial="true"/>
-                        <defaultvalue>java.lang.Integer.valueOf("10")</defaultvalue>
-                    </attribute>
                     <attribute qualifier="activemodel" type="java.lang.String">
                         <persistence type="persistent"/>
                         <modifiers />
-                    </attribute>
-                    <attribute qualifier="acceptancerate" type="java.lang.Double">
-                        <persistence type="persistent"/>
-                        <modifiers initial="true"/>
-                        <defaultvalue>java.lang.Double.valueOf("90")</defaultvalue>
-                    </attribute>
-                    <attribute qualifier="uncertaintyrate" type="java.lang.Double">
-                        <persistence type="persistent"/>
-                        <modifiers initial="true"/>
-                        <defaultvalue>java.lang.Double.valueOf("30")</defaultvalue>
                     </attribute>
                     <attribute qualifier="chatname" type="java.lang.String">
                         <persistence type="persistent"/>

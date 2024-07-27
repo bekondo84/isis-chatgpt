@@ -18,7 +18,7 @@
         <e:component>
             <e:common>
                 <e:form>
-                    <e:section columns="2" position="2" name="commons">
+                    <e:section columns="2" position="4" name="commons">
                         <e:field qualifier="code"  updatable="false"/>
                         <e:field qualifier="label" />
                         <e:field qualifier="status"  editable="false" updatable="false" widget="manytoone"/>
@@ -27,7 +27,15 @@
                         <e:field qualifier="dateModification" widget="datetime-local"/>
                         <e:field qualifier="defaultmodel" widget="switch"/>
                     </e:section>
-                    <e:section position="1" columns="1" name="type.KnowledgeModule.description.name" header="true">
+                    <e:section columns="2" position="3" name="KnowledgeModule.settings.name" header="true">
+                        <e:field qualifier="learningrate" />
+                        <e:field qualifier="minlearningrate" />
+                        <e:field qualifier="batchsize" />
+                        <e:field qualifier="epochs" />
+                        <e:field qualifier="acceptancerate" />
+                        <e:field qualifier="uncertaintyrate" />
+                    </e:section>
+                    <e:section position="1" columns="2" name="type.KnowledgeModule.description.name" header="true">
                         <e:field qualifier="description" widget="textarea"  />
                     </e:section>
                 </e:form>

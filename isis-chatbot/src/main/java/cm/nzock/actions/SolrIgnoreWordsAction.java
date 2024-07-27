@@ -55,7 +55,7 @@ public class SolrIgnoreWordsAction extends AbstractAction {
     public Map synchronize(Map<String, String> context) throws JsonProcessingException, ModelServiceException {
         final SolrIgnoreWordsModel solrIgnoreWords = mapper.readValue(context.get(DATA), SolrIgnoreWordsModel.class);
         final SettingModel setting = settingService.getSettings();
-        final int batchSize = Objects.nonNull(setting) ? setting.getBatchsize(): 50 ;
+        final int batchSize = 50 ;
         RestrictionsContainer container = RestrictionsContainer.newInstance();
         final long totalItems = flexibleSearchService.count(KnowledgeModel.class, container);
         final long epochs = (totalItems / batchSize) +1 ;
