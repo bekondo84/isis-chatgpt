@@ -1,6 +1,7 @@
 package cm.nzock.services.impl;
 
 import cm.nzock.beans.ChatData;
+import cm.nzock.preprocessor.StringPrePreprocessor;
 import cm.nzock.services.CellMemoryService;
 import cm.nzock.services.ChatService;
 import cm.nzock.services.Doc2VecService;
@@ -189,7 +190,7 @@ public class DefaultChatService implements ChatService {
         }
         //Clean the user input to remove the noise
         //inputTokens.addAll(tokenizerFactory.create(text).getTokens());
-        inputBuffer.append(text.toLowerCase());
+        inputBuffer.append(StringCleaning.stripPunct(new StringPrePreprocessor().preProcess(text.toLowerCase())));
         // String cleanText = inputBuffer.toString();
         final InMemoryLookupTable<VocabWord> lookupTable = (InMemoryLookupTable<VocabWord>) paragraphVectors.getLookupTable();
         INDArray userInputVector = paragraphVectors.inferVector(inputBuffer.toString().toLowerCase());
@@ -200,7 +201,6 @@ public class DefaultChatService implements ChatService {
         double cosim = Transforms.cosineSim(userInputVector, labelVec);
         LOG.info(String.format("---cleanText: %s   - cosim :%s", inputBuffer.toString(), cosim));
         //Build the ansew base on the value of the cosim
-        final SettingModel setting = settingService.getSettings();
         final double acceptanceRate = domain.getAcceptancerate()/100;
         final double uncertaintyrate = domain.getUncertaintyrate()/100;
         LabelData result = new LabelData(label, cosim, acceptanceRate, uncertaintyrate);

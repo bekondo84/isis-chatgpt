@@ -24,3 +24,7 @@ INSERT_UPDATE ActionNode;code[unique=true];label[lang=fr];label[lang=en];module(
                         ;evaluate.action;Construction et evaluation du modèle;label field handler;isis-chatbot;evaluationAction;evaluate
                         ;knowledgemodule01.action;Définir le modèle courant comme modèle par défaut;set current model as default;isis-chatbot;knowledgeModuleAction;setAsdefault
                         ;knowledgemodule02.action;Ouvrir / fermer le modèle au publique;open / close model to the public;isis-chatbot;knowledgeModuleAction;openclose
+
+###Create Backend cron job
+INSERT_UPDATE ImageCronJob;code[unique=true];job;description[lang=fr];description[lang=en];cronExpression;extension
+                     ;imageProcessingJob;imageProcessingJob;Traitement des images pour renseigner la table des medias;process all medias in the repository to fill the media database table;0 */30 * ? * *;isis-chatbot

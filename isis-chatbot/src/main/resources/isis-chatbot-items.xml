@@ -514,5 +514,13 @@
             </itemtype>
             <!---->
         </itemgroup>
+        <itemgroup name="CronJob">
+            <itemtype code="ImageCronJob" package="cm.platform.basecommerce.core.jobs" persist="true" generate="true" extends="CronJob">
+                <deployment typecode="00119" table="t_imgjob"/>
+                <attributes>
+
+                </attributes>
+            </itemtype>
+        </itemgroup>
     </itemtypes>
 </items>

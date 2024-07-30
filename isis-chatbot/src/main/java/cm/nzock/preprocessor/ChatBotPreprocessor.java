@@ -1,10 +1,9 @@
-package cm.nzock.transformers;
+package cm.nzock.preprocessor;
 
 import cm.nzock.solr.Dictionnary;
 import cm.nzock.solr.IgnoreWordRepository;
 import org.apache.commons.lang3.StringUtils;
 import org.deeplearning4j.text.tokenization.tokenizer.TokenPreProcess;
-import org.deeplearning4j.text.tokenization.tokenizer.preprocessor.StringCleaning;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -30,7 +29,8 @@ public class ChatBotPreprocessor implements TokenPreProcess {
     @Override
     public String preProcess(String token) {
         final List<String> words = Arrays.asList(token.toLowerCase().split(StringUtils.SPACE))
-                .stream().filter(StringUtils::isNotBlank)
+                .stream()
+                .filter(StringUtils::isNotBlank)
                 .collect(Collectors.toList());
         String value = token.toLowerCase();
 

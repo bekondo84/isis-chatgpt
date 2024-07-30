@@ -3,6 +3,7 @@ package cm.nzock;
 import cm.nzock.services.TokenizerFactoryService;
 import cm.platform.BaseCommerceServiceConfig;
 import cm.platform.basecommerce.BaseCommerceFacadesConfig;
+import cm.platform.basecommerce.core.BaseCommerceBatchConfig;
 import cm.platform.basecommerce.core.security.SecurityConfig;
 import cm.platform.basecommerce.core.settings.SettingModel;
 import cm.platform.basecommerce.core.utils.FilesHelper;
@@ -25,7 +26,7 @@ import java.util.Objects;
 
 @Configuration
 @ComponentScan(basePackages = {"cm.nzock"})
-@Import({BaseCommerceServiceConfig.class, SecurityConfig.class, BaseCommerceFacadesConfig.class, SolrConfig.class})
+@Import({BaseCommerceServiceConfig.class, SecurityConfig.class, BaseCommerceFacadesConfig.class, SolrConfig.class, BaseCommerceBatchConfig.class})
 public class ApplicationConfig implements WebMvcConfigurer
 {
     private static final Logger LOG = LoggerFactory.getLogger(ApplicationConfig.class);

@@ -17,22 +17,13 @@ INSERT_UPDATE MetaType;code[unique=true];codeType;typeName;parent;generate;persi
 ;ChatLog;00110;cm.platform.basecommerce.core.chat.ChatLogModel;  ;true;true;false;  
 ;CellMemory;00111;cm.platform.basecommerce.core.chat.CellMemoryModel;  ;true;true;false;  
 ;Setting;000059;cm.platform.basecommerce.core.settings.SettingModel;  ;true;true;false;  
+;ImageCronJob;00119;cm.platform.basecommerce.core.jobs.ImageCronJobModel;CronJob;true;true;false;  
 ;ScriptType;scripttype;cm.platform.basecommerce.core.enums.ScriptType;EnumerateValue;true;true;false;  
 ;ImportLogType;importlogtype;cm.platform.basecommerce.core.enums.ImportLogType;EnumerateValue;true;true;false;  
 ;ImportLogState;importlogstate;cm.platform.basecommerce.core.enums.ImportLogState;EnumerateValue;true;true;false;  
 ;ChatLogState;chatlogstate;cm.platform.basecommerce.core.enums.ChatLogState;EnumerateValue;true;true;false;  
 ;KnowledgeModStatus;knowledgemodstatus;cm.platform.basecommerce.core.enums.KnowledgeModStatus;EnumerateValue;true;true;false;  
 ;EnumerateValue;enumeratevalue;cm.platform.basecommerce.core.EnumerateValue;EnumerateValue;true;false;false;Enum base class
-INSERT_UPDATE ImportLogState;code
-;LOAD
-;IMPORT
-;ERROR
-INSERT_UPDATE ScriptType;code
-;GROOVY
-;JavaScript
-INSERT_UPDATE ImportLogType;code
-;APPEND
-;RESET
 INSERT_UPDATE ChatLogState;code
 ;KNOWN
 ;UNCERTAIN
@@ -40,5 +31,15 @@ INSERT_UPDATE ChatLogState;code
 INSERT_UPDATE KnowledgeModStatus;code
 ;OPEN
 ;CLOSE
+INSERT_UPDATE ScriptType;code
+;GROOVY
+;JavaScript
+INSERT_UPDATE ImportLogType;code
+;APPEND
+;RESET
+INSERT_UPDATE ImportLogState;code
+;LOAD
+;IMPORT
+;ERROR
 
 

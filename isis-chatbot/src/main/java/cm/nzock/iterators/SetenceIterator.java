@@ -1,5 +1,6 @@
 package cm.nzock.iterators;
 
+import cm.nzock.preprocessor.StringPrePreprocessor;
 import cm.nzock.services.TokenizerFactoryService;
 import cm.platform.basecommerce.core.knowledge.KnowledgeModel;
 import cm.platform.basecommerce.core.knowledge.KnowledgeModuleModel;
@@ -69,26 +70,26 @@ public class SetenceIterator implements LabelAwareIterator {
         int index = cursor.getAndIncrement();
         final KnowledgeModel knowledge = (KnowledgeModel) flexibleSearchService.doSearch(KnowledgeModel.class, buildRestrictionsContainer(), new HashMap<>(), new HashSet<>(), index, index).get(0);
 
-       LOG.info(String.format("nextDocument ------ question : %s", knowledge.getCode()));
+       //LOG.info(String.format("nextDocument ------ question : %s", knowledge.getCode()));
 
         LabelledDocument document =new LabelledDocument();
-        //Tokenized
-        final List<String> words =new ArrayList<>();
+        /**
         final StringBuffer stringBuffer = new StringBuffer();
 
         //final TokenizerFactory tokenizerFactory = tokenizerFactoryService.tokenizerFactory();
 
         if (StringUtils.isNoneBlank(knowledge.getTemplate())) {
             //words.addAll(tokenizerFactory.create(knowledge.getTemplate()).getTokens());
-            stringBuffer.append(knowledge.getTemplate().toLowerCase()).append(StringUtils.SPACE);
+            stringBuffer.append(knowledge.getTemplate());//.append(StringUtils.SPACE);
         }
         if (StringUtils.isNoneBlank(knowledge.getKeywords())) {
             //words.addAll(Arrays.stream(knowledge.getKeywords().split(";")).collect(Collectors.toList()));
            // stringBuffer.append(knowledge.getKeywords().replace(";", StringUtils.SPACE).toLowerCase());
         }
         //StringUtils.joinWith(StringUtils.SPACE, tokenizerFactory.create(stringBuffer.toString()).getTokens())
-        document.setContent(StringCleaning.stripPunct(stringBuffer.toString()));
-        LOG.info(String.format("Iterator text : %s", document.getContent()));
+        */
+         document.setContent(StringCleaning.stripPunct(new StringPrePreprocessor().preProcess(knowledge.getTemplate())));
+        LOG.info(String.format("Processing Knowledge %s ", document.getContent()));
         document.addLabel(knowledge.getLabel().getCode());
         document.setId(String.valueOf(index));
         return document;

@@ -1,5 +1,7 @@
 package cm.nzock.actions;
 
+import cm.nzock.preprocessor.StringPrePreprocessor;
+import cm.nzock.services.TokenizerFactoryService;
 import cm.nzock.solr.Dictionnary;
 import cm.nzock.solr.IgnoreWordRepository;
 import cm.platform.basecommerce.core.actions.AbstractAction;
@@ -73,15 +75,17 @@ public class SolrIgnoreWordsAction extends AbstractAction {
                         List<String> keywordsWords = new ArrayList<>();
                         LOG.info(String.format("--Template: --- %s -------- Keywords: %s", item.getTemplate(), item.getKeywords()));
                         if (StringUtils.isNoneBlank(item.getTemplate())) {
-                            templateWords.addAll(Arrays.asList(StringCleaning.stripPunct(item.getTemplate()).toLowerCase()
+                            templateWords.addAll(Arrays.asList(StringCleaning.stripPunct(new StringPrePreprocessor().preProcess(item.getTemplate())).toLowerCase()
                                             .split(StringUtils.SPACE))
                                             .stream()
+                                            .map(String::trim)
                                             .filter(StringUtils::isNotBlank)
                                             .collect(Collectors.toList()));
                         }
                         if (StringUtils.isNoneBlank(item.getKeywords())) {
                             keywordsWords.addAll(Arrays.asList(item.getKeywords().split(";"))
                                             .stream()
+                                            .map(String::trim)
                                             .filter(StringUtils::isNotBlank)
                                             .map(word ->StringCleaning.stripPunct(word).toLowerCase())
                                             .collect(Collectors.toList()));
