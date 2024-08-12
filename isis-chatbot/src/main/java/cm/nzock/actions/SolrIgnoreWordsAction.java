@@ -65,15 +65,15 @@ public class SolrIgnoreWordsAction extends AbstractAction {
         //Clean the repository
         repository.findAll().forEach(word -> repository.deleteById(word.getId()));
         //repository.deleteAll();
-        for (int i=0; i < epochs; i++) {
-            List<KnowledgeModel> items = flexibleSearchService.doSearch(KnowledgeModel.class, container, new HashMap<>(), new HashSet<>(), i, i+batchSize);
+        for (int i=0; i <= epochs; i++) {
+            List<KnowledgeModel> items = flexibleSearchService.doSearch(KnowledgeModel.class, container, new HashMap<>(), new HashSet<>(), i*batchSize, batchSize);
             CollectionUtils.emptyIfNull(items)
                     .stream()
                     .filter(Objects::nonNull)
                     .forEach(item -> {
                         List<String> templateWords = new ArrayList<>();
                         List<String> keywordsWords = new ArrayList<>();
-                        LOG.info(String.format("--Template: --- %s -------- Keywords: %s", item.getTemplate(), item.getKeywords()));
+                        //LOG.info(String.format("--Template: --- %s -------- Keywords: %s", item.getTemplate(), item.getKeywords()));
                         if (StringUtils.isNoneBlank(item.getTemplate())) {
                             templateWords.addAll(Arrays.asList(StringCleaning.stripPunct(new StringPrePreprocessor().preProcess(item.getTemplate())).toLowerCase()
                                             .split(StringUtils.SPACE))
@@ -92,13 +92,15 @@ public class SolrIgnoreWordsAction extends AbstractAction {
                         }
                         //Update the keyword
                         pullKeywords(keywordsWords);
-                        List<String>  wordsToIgnore = templateWords.stream().filter(value -> !keywordsWords.contains(value)).collect(Collectors.toList());
+                        List<String>  wordsToIgnore = templateWords.stream()
+                                .filter(value -> !repository.findByIdAndType(value, IgnoreWordRepository.KEYWORD_STR).isPresent())
+                                .collect(Collectors.toList());
                         LOG.info(String.format("template : %s ----------- keywords : %s ------------ ignore words: %s",templateWords, keywordsWords, wordsToIgnore));
                         pullOnusualWords(wordsToIgnore);
                     });
         }
         //Remove keywords previously mark as ignore
-        cleanAllKeywords();
+        //cleanAllKeywords();
         solrIgnoreWords.setDate(new Date());
         modelService.save(solrIgnoreWords);
         context.put(DATA, modelService.findAndConvertToJson(solrIgnoreWords));

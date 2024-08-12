@@ -14,6 +14,8 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import javax.annotation.Resource;
+
 @Service
 public class DefaultTokenizerFactoryService implements TokenizerFactoryService {
 
@@ -23,15 +25,25 @@ public class DefaultTokenizerFactoryService implements TokenizerFactoryService {
     private FlexibleSearchService flexibleSearchService;
     @Autowired
     private SettingService settingService;
-    @Autowired
-    private TokenPreProcess preprocessor;
+    @Resource(name = "ignoreWordPreprocessor")
+    private TokenPreProcess ignoreWordPreprocessor;
+    @Resource(name = "keyWordPreprocessor")
+    private TokenPreProcess keyWordPreprecessor;
 
 
     @Override
-    public TokenizerFactory tokenizerFactory() {
+    public TokenizerFactory ignoreWordTokenizerFactory() {
         final TokenizerFactory tokenizerFactory = new DefaultTokenizerFactory();
-        tokenizerFactory.setTokenPreProcessor(new CompositePreProcessor(new StringPrePreprocessor(), new CommonPreprocessor(), preprocessor));
+        CompositePreProcessor compositePreProcessor = new CompositePreProcessor(new StringPrePreprocessor(), new CommonPreprocessor(), ignoreWordPreprocessor);
+        tokenizerFactory.setTokenPreProcessor(compositePreProcessor);
+        return tokenizerFactory;
+    }
 
+    @Override
+    public TokenizerFactory keyWordTokenizerFactory() {
+        final TokenizerFactory tokenizerFactory = new DefaultTokenizerFactory();
+        CompositePreProcessor compositePreProcessor = new CompositePreProcessor(new StringPrePreprocessor(), new CommonPreprocessor(), keyWordPreprecessor);
+        tokenizerFactory.setTokenPreProcessor(compositePreProcessor);
         return tokenizerFactory;
     }
 

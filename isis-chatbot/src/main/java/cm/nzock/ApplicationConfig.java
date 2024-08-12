@@ -47,7 +47,7 @@ public class ApplicationConfig implements WebMvcConfigurer
             paragraphVectors = activeModelFile.exists() ? WordVectorSerializer.readParagraphVectors(activeModelFile) : null;
 
             if (Objects.nonNull(paragraphVectors)) {
-                paragraphVectors.setTokenizerFactory(tokenizerFactoryService.tokenizerFactory());
+                paragraphVectors.setTokenizerFactory(tokenizerFactoryService.ignoreWordTokenizerFactory());
             }
         }
         LOG.info("********** End initializing ParagraphVectors ********************************** : " + paragraphVectors);

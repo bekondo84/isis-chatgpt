@@ -13,6 +13,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping(IsisConstants.ApiScope.PUBLIC+"/chat")
@@ -25,6 +26,11 @@ public class OpenChatBotController {
     @Autowired
     private ChatSessionFacade sessionFacade ;
 
+
+    @GetMapping("/settings")
+    public ResponseEntity<Map<String, String>> generalSettings() {
+        return ResponseEntity.ok(chatFacade.getGeneralSettings());
+    }
 
     @GetMapping("/domain")
     public ResponseEntity<DomainData> defaultDomain() {

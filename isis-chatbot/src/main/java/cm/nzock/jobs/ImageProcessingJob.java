@@ -28,6 +28,7 @@ public class ImageProcessingJob extends AbstractJobPerformable<ImageCronJobModel
     public static final String PUBLIC_FOLDER = "public";
     public static final String PRIVATE_FOLDER = "private";
     public static final String ARCHIVES_FOLDER = "archives";
+    public static final String ERRORS_FOLDER = "errors";
 
     @Autowired
     private MediaService mediaService;
@@ -57,9 +58,15 @@ public class ImageProcessingJob extends AbstractJobPerformable<ImageCronJobModel
         if (!archiveImageFolder.exists()) {
             archiveImageFolder.mkdir();
         }
+
+        final File errorImageFolder = new File(StringUtils.joinWith(File.separator, imageFolder.getPath(), ERRORS_FOLDER));
+
+        if (!errorImageFolder.exists()) {
+            errorImageFolder.mkdir();
+        }
         //Process Public
-        processImages(publicImageFolder.listFiles(), archiveImageFolder, true);
-        processImages(privateImageFolder.listFiles(), archiveImageFolder, false);
+        processImages(publicImageFolder.listFiles(), archiveImageFolder, errorImageFolder, true);
+        processImages(privateImageFolder.listFiles(), archiveImageFolder, errorImageFolder, false);
         return new PerformResult(CronJobResult.SUCCESS, CronJobStatus.FINISHED);
     }
 
@@ -75,7 +82,7 @@ public class ImageProcessingJob extends AbstractJobPerformable<ImageCronJobModel
      * @param archiveImageFolder
      * @param open
      */
-    private void processImages(File[] files, File archiveImageFolder, boolean open) {
+    private void processImages(File[] files, File archiveImageFolder, File errorFolder, boolean open) {
          for (File image : files) {
             try {
                 //Create the media
@@ -84,6 +91,11 @@ public class ImageProcessingJob extends AbstractJobPerformable<ImageCronJobModel
                 FileUtils.moveFile(image, new File(StringUtils.joinWith(File.separator, archiveImageFolder.getPath(), image.getName())));
             } catch (Exception e) {
                 LOG.error(String.format("Enable to process Image %s ", image.getName()),e);
+                try {
+                    FileUtils.moveFile(image, new File(StringUtils.joinWith(File.separator, errorFolder.getPath(), image.getName())));
+                } catch (IOException ex) {
+                    throw new RuntimeException(ex);
+                }
             }
         }
     }

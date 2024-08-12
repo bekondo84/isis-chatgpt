@@ -16,9 +16,6 @@ import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.deeplearning4j.models.embeddings.loader.WordVectorSerializer;
 import org.deeplearning4j.models.paragraphvectors.ParagraphVectors;
-import org.deeplearning4j.text.tokenization.tokenizer.preprocessor.CommonPreprocessor;
-import org.deeplearning4j.text.tokenization.tokenizerfactory.DefaultTokenizerFactory;
-import org.deeplearning4j.text.tokenization.tokenizerfactory.TokenizerFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -94,7 +91,7 @@ public class DefaultDoc2VecService implements Doc2VecService {
                 paragraphVectors = activeModelFile.exists() ? WordVectorSerializer.readParagraphVectors(activeModelFile) : null;
 
                 if (Objects.nonNull(paragraphVectors)) {
-                    paragraphVectors.setTokenizerFactory(tokenizerFactoryService.tokenizerFactory());
+                    paragraphVectors.setTokenizerFactory(tokenizerFactoryService.keyWordTokenizerFactory());
                     //paragraphVectors.fit();
                 }
             } else if (Objects.isNull(domain)) {
@@ -126,7 +123,7 @@ public class DefaultDoc2VecService implements Doc2VecService {
                 .labelsSource(iterator.getLabelsSource())
                 .iterate(iterator)
                 .trainWordVectors(true)
-                .tokenizerFactory(tokenizerFactoryService.tokenizerFactory())
+                .tokenizerFactory(tokenizerFactoryService.ignoreWordTokenizerFactory())
                 //.windowSize(5)
                 .build();
 

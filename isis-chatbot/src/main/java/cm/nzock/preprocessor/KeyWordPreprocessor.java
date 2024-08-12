@@ -17,10 +17,10 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
-@Component
-public class ChatBotPreprocessor implements TokenPreProcess {
+@Component(value = "keyWordPreprocessor")
+public class KeyWordPreprocessor implements TokenPreProcess {
 
-    private static final Logger LOG = LoggerFactory.getLogger(ChatBotPreprocessor.class);
+    private static final Logger LOG = LoggerFactory.getLogger(KeyWordPreprocessor.class);
 
     @Autowired
     private SolrTemplate solrTemplate;
@@ -33,16 +33,22 @@ public class ChatBotPreprocessor implements TokenPreProcess {
                 .filter(StringUtils::isNotBlank)
                 .collect(Collectors.toList());
         String value = token.toLowerCase();
-
+        final StringBuffer textWithoutNoises = new StringBuffer();
         for (String word : words) {
-            final Optional<Dictionnary> ignoreWord = repository.findById(word);
-            if (ignoreWord.isPresent()) {
+            final Optional<Dictionnary> keyword = repository.findByIdAndType(word, IgnoreWordRepository.KEYWORD_STR);
+           LOG.info(String.format("----------- Dictionnary ----------- %s    ---- %s", word, keyword.isPresent()));
+            /**
+            ignoreWord.filter(wd -> !wd.getType().equalsIgnoreCase(SolrIgnoreWordsAction.KEYWORD))
+                    .ifPresent(keywd -> textWithoutNoises.append(keywd.getValue()));
+             */
+            if (!keyword.isPresent()) {
                 //LOG.info(String.format("-------------------Cleaning word  %s on text : %s", ignoreWord.get().getValue(), value));
-                value = StringUtils.replace(value, ignoreWord.get().getValue(), StringUtils.EMPTY);
+                value = StringUtils.replace(value, word, StringUtils.EMPTY);
             }
+
         }
-        LOG.info(String.format("Receive text : %s-------------------Clean text : %s", token, value));
-        return value;
+        LOG.info(String.format("Receive text : %s-------------------Clean text : %s", token, value.toString()));
+        return value;//textWithoutNoises.toString();
     }
 
 

@@ -4,5 +4,6 @@ import org.deeplearning4j.text.tokenization.tokenizerfactory.TokenizerFactory;
 
 public interface TokenizerFactoryService {
 
-    TokenizerFactory tokenizerFactory();
+    TokenizerFactory ignoreWordTokenizerFactory();
+    TokenizerFactory keyWordTokenizerFactory();
 }

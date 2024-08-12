@@ -117,9 +117,8 @@ public class DefaultChatFacade implements ChatFacade {
         final SettingModel setting = settingService.getSettings();
         final Map<String, String> settings = new HashMap<>();
 
-        settings.put("username", user.getName());
-        settings.put("chatname", setting.getChattitle());
-
+        Optional.ofNullable(user).ifPresent(userModel -> settings.put("username", userModel.getName()));
+        Optional.ofNullable(setting).ifPresent(settingModel -> settings.put("chatname", setting.getChattitle()));
         return settings;
     }
 

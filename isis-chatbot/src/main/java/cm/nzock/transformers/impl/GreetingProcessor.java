@@ -11,6 +11,8 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Objects;
 
 @Component(value = "greetingProcessor")
@@ -24,7 +26,9 @@ public class GreetingProcessor implements Processor {
     private UserService userService;
 
     @Override
-    public String proceed(String text) throws Exception {
+    public Map proceed(String text) throws Exception {
+
+        final Map ctx = new HashMap<>();
         final SettingModel setting = settingService.getSettings();
         final UserModel user = userService.getCurrentUser();
 
@@ -38,7 +42,8 @@ public class GreetingProcessor implements Processor {
             userName = user.getName();
         }
         String value = String.format(text, userName, chatname);
-        LOG.info(String.format(" text after action execute -------------- %s", value));
-        return value.replace("null", StringUtils.EMPTY);
+        ctx.put(TEXT_ENTRY, value.replace("null", StringUtils.EMPTY));
+
+        return ctx;
     }
 }

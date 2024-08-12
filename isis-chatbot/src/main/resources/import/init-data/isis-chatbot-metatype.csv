@@ -28,18 +28,18 @@ INSERT_UPDATE ChatLogState;code
 ;KNOWN
 ;UNCERTAIN
 ;UNKNOWN
+INSERT_UPDATE ImportLogState;code
+;LOAD
+;IMPORT
+;ERROR
+INSERT_UPDATE ImportLogType;code
+;APPEND
+;RESET
 INSERT_UPDATE KnowledgeModStatus;code
 ;OPEN
 ;CLOSE
 INSERT_UPDATE ScriptType;code
 ;GROOVY
 ;JavaScript
-INSERT_UPDATE ImportLogType;code
-;APPEND
-;RESET
-INSERT_UPDATE ImportLogState;code
-;LOAD
-;IMPORT
-;ERROR
 
 

@@ -94,11 +94,16 @@ public class DefaultChatService implements ChatService {
                     chaLog.setOutput(answer);
                 } else {
                     chaLog.setState(enumerationService.getEnumerationValue(ChatLogState.KNOWN.getCode(), ChatLogState.class));
+                    Boolean notCompletQuestion = false;
                     //Check if the user have the rigth to accès this level of informations
                     //LOG.info(String.format("inside --------converse------------------------ %s -------------StringUtils.isNotBlank(knowlegeLabel.getAction()) : %s", knowlegeLabel.getAction(), StringUtils.isNotBlank(knowlegeLabel.getAction())));
                     if (StringUtils.isNotBlank(knowlegeLabel.getAction())) {
                         Processor processor = (Processor) applicationContext.getBean(knowlegeLabel.getAction());
-                        chaLog.setOutput(processor.proceed(knowlegeLabel.getLabel()));
+                        Map ctx = processor.proceed(knowlegeLabel.getLabel());
+                        chaLog.setOutput((String) ctx.get(Processor.TEXT_ENTRY));
+
+                        notCompletQuestion = ( ctx.get(Processor.ENDLABEL_ENTRY) instanceof Boolean && BooleanUtils.isTrue((Boolean) ctx.get("ENDLABEL")));
+
                     } else if (StringUtils.isNotBlank(knowlegeLabel.getScript()) && Objects.nonNull(knowlegeLabel.getType())) {
                         //Execute the script on the label before return
                         chaLog.setOutput(knowlegeLabel.getLabel());
@@ -106,7 +111,7 @@ public class DefaultChatService implements ChatService {
                         chaLog.setOutput(knowlegeLabel.getLabel());
                     }
 
-                    if (BooleanUtils.isTrue(knowlegeLabel.getEndLabel())) {
+                    if (BooleanUtils.isTrue(knowlegeLabel.getEndLabel()) && !notCompletQuestion) {
                         cellMemoryService.forget(uuid);
                     } else {
                         cellMemoryService.save(uuid, chaLog.getOutput());

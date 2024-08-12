@@ -30,8 +30,7 @@ public class SetenceIterator implements LabelAwareIterator {
 
     //@Autowired
     private FlexibleSearchService flexibleSearchService;
-   // @Autowired
-    private TokenizerFactoryService tokenizerFactoryService;
+    // @Autowired
     private AtomicInteger  cursor = new AtomicInteger(0);
     private LabelsSource labelsSource ;
 
@@ -146,7 +145,6 @@ public class SetenceIterator implements LabelAwareIterator {
     }
 
     public SetenceIterator setTokenizerFactoryService(TokenizerFactoryService tokenizerFactoryService) {
-        this.tokenizerFactoryService = tokenizerFactoryService;
         return this;
     }
 
